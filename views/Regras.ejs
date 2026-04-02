@@ -1,0 +1,80 @@
+<%- include("partials/header") %>
+<%- include("partials/navbar") %>
+
+<h1>Regras</h1>
+<div class="base">
+<h2> Base do sistema</h2>
+<div class="texto">
+<p>
+   as regras se baseiam em um esquema de testes de 1d20 + Mod.Atributo
+   os atributos são definidos na criação da ficha, sendo divididos entre
+</p>
+<ul>
+    <li><strong>Força:</strong> define os movimentos que requerem uso do esforço fisico ativo do personagem, forçando seus musculos, seja atacar com armas pesadas
+        levantar peso, escalar, nadar, etc...
+    </li>
+    <li><strong>Agilidade:</strong> Define movimentos rapidos, assim como atacar a distancia, e corridas focadas em velocidade, exigindo o quão rapido e preciso são os reflexos do seu personagem</li>
+    <li><strong>Vigor:</strong> define a vida do seu personagem, assim como tbm define a força passiva dele, de resistir a danos diretos ao seu corpo, assim como mal estar e venenos</li>
+    <li><strong>intelecto:</strong> define a inteligencia do personagem, o quão astuto ele é, o quão bem guarda informações na memoria, decifra codigos, entre outras coisas
+    exencial caso uma investigação ocorra</li>
+    <li><strong>Atenção:</strong> define a percepção do seu personagem ela serve para que ele possa notar as coisas a todo momento tal qual perceber detalhes
+    e até emoções e intenções</li>
+    <li><strong>estabilidade:</strong> define a capacidade de resistir a ataques mentais
+    assim como evitar surtos, e danos mentais graves permanentes</li>
+</ul>
+</div>
+<h1>Vida e Energia</h1>
+<div class="texto">
+A vida e a Energia são baseadas no vigor dos personagens, sendo calculados com o vigor cheio para vida, e metade para energia, somado a 10 de vida base e 6 de energia base
+a energia é usada para a ultilização das habilidades logo a baixo.
+</div>
+<div>
+    <h1>Habilidades</h1>
+    <p>Os personagens possuem pontos de habilidade, cada ponto da o direito de criar, ou aprimorar uma habilidade, começando com 4, e aumentando em 2 a cada nivel do personagem</p>
+    <table class="tabela-dano">
+  <thead>
+    <tr>
+      <th colspan="4">Nível - Dado de Dano</th>
+      <th colspan="4">Nível - Dado de Cura</th>
+    </tr>
+    <tr>
+      <th colspan="2">Singular - Dano</th>
+      <th colspan="2">Área - Dano</th>
+      <th colspan="2">Singular - Cura</th>
+      <th colspan="2">Área - Cura</th>
+    </tr>
+    <tr>
+      <th>Nível</th><th>Dano</th>
+      <th>Nível</th><th>Dano</th>
+      <th>Nível</th><th>Dano</th>
+      <th>Nível</th><th>Dano</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr><td>1</td><td>1d10</td><td>1</td><td>1d6</td><td>1</td><td>1d8</td><td>1</td><td>1d6</td></tr>
+    <tr><td>2</td><td>2d6</td><td>2</td><td>1d8</td><td>2</td><td>1d10</td><td>2</td><td>1d8</td></tr>
+    <tr><td>3</td><td>2d8</td><td>3</td><td>1d10</td><td>3</td><td>2d8</td><td>3</td><td>1d10</td></tr>
+    <tr><td>4</td><td>2d10</td><td>4</td><td>2d8</td><td>4</td><td>2d10</td><td>4</td><td>2d8</td></tr>
+    <tr><td>5</td><td>3d8</td><td>5</td><td>2d10</td><td>5</td><td>3d8</td><td>5</td><td>2d10</td></tr>
+    <tr><td>6</td><td>3d10</td><td>6</td><td>3d8</td><td>6</td><td>3d10</td><td>6</td><td>3d8</td></tr>
+    <tr><td>7</td><td>4d8</td><td>7</td><td>3d10</td><td>7</td><td>4d8</td><td>7</td><td>3d10</td></tr>
+    <tr><td>8</td><td>4d10</td><td>8</td><td>4d8</td><td>8</td><td>4d10</td><td>8</td><td>4d8</td></tr>
+    <tr><td>9</td><td>5d8</td><td>9</td><td>4d10</td><td>9</td><td>5d8</td><td>9</td><td>4d10</td></tr>
+    <tr><td>10</td><td>5d10</td><td>10</td><td>5d8</td><td>10</td><td>5d10</td><td>10</td><td>5d8</td></tr>
+    <tr><td>11</td><td>6d8</td><td>11</td><td>5d10</td><td>11</td><td>6d8</td><td>11</td><td>5d10</td></tr>
+    <tr><td>12</td><td>6d10</td><td>12</td><td>6d8</td><td>12</td><td>6d10</td><td>12</td><td>6d8</td></tr>
+    <tr><td>13</td><td>7d8</td><td>13</td><td>6d10</td><td>13</td><td>7d8</td><td>13</td><td>6d10</td></tr>
+    <tr><td>14</td><td>7d10</td><td>14</td><td>7d8</td><td>14</td><td>7d10</td><td>14</td><td>7d8</td></tr>
+    <tr><td>15</td><td>8d8</td><td>15</td><td>7d10</td><td>15</td><td>8d8</td><td>15</td><td>7d10</td></tr>
+    <tr><td>16</td><td>8d10</td><td>16</td><td>8d8</td><td>16</td><td>8d10</td><td>16</td><td>8d8</td></tr>
+    <tr><td>17</td><td>9d8</td><td>17</td><td>8d10</td><td>17</td><td>9d8</td><td>17</td><td>8d10</td></tr>
+    <tr><td>18</td><td>9d10</td><td>18</td><td>9d8</td><td>18</td><td>9d10</td><td>18</td><td>9d8</td></tr>
+    <tr><td>19</td><td>10d8</td><td>19</td><td>9d10</td><td>19</td><td>10d8</td><td>19</td><td>9d10</td></tr>
+    <tr><td>20</td><td>10d10</td><td>20</td><td>10d8</td><td>20</td><td>10d10</td><td>20</td><td>10d8</td></tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+<%- include("partials/footer") %>
