@@ -1,15 +1,143 @@
 <%- include("partials/header") %>
 <%- include("partials/navbar") %>
 
-<h1>Bem-vindo ao Alpha 10</h1>
-<p>Uma historia de rpg de mesa, baseada em fundação SCP</p>
+<section class="intro">
+  <h1>Bem-vindo ao Alpha 10</h1>
+  <p>Uma história de RPG de mesa baseada na Fundação SCP</p>
+</section>
 
-<div class="historia">
-<h2> Um pouco da historia</h2>
-<p>Essa historia atualmente esta com os personagen explorando uma cidade misteriosa a baixo de londres, nomeada Unlondon</p>
-<img src="/img/Mapa1.webp"> 
-<p>eOs primeiros contatos com UnLondon não são explosivos, mas inquietantes. Pequenas inconsistências, registros estranhos, talvez relatos incompletos ou corrompidos. A cidade não se revela de uma vez — ela “vaza” para a realidade. Isso cria uma sensação de investigação, quase como se algo estivesse tentando ser entendido, mas sempre escapando.</p>
-<p></p>
+<section class="historia">
+  <h2> Arquivo: UnLondon</h2>
+
+  <p>
+    Atualmente, os agentes exploram uma cidade misteriosa abaixo de Londres,
+    conhecida como <strong>UnLondon</strong>.
+  </p>
+
+  <img src="/img/Mapa1.webp" class="mapa">
+
+  <p>
+    Os primeiros contatos não são explosivos, mas inquietantes.
+    Pequenas inconsistências, registros corrompidos... a cidade não se revela —
+    ela <strong>vaza para a realidade</strong>.
+  </p>
+
+  <p>
+    Referência:
+    <a class="ref" href="http://scp-pt-br.wikidot.com/scp-1678" target="_blank">
+      SCP-1678
+    </a>
+  </p>
+</section>
+
+<section class="npc">
+  <h2>Banco de Dados de NPCs</h2>
+
+  <!-- CONNIE -->
+<div class="npc-item" onclick="toggleNPC('connie')">
+  <h3>CONNIE — Nível O5</h3>
 </div>
+
+<div id="connie" class="npc-details">
+
+  <h2 class="npc-nome">CONNIE</h2>
+  <p class="npc-nivel">NÍVEL DE ACESSO: O5</p>
+
+  <div class="npc-bloco">
+    <h3>Origem</h3>
+    <p>
+      Connie é a mãe da Yumei. Ela sempre foi inteligente, renomada e poderosa. Entrou na Fundação após se casar com um cientista que costumava trabalhar lá. Ao perceber que existiam coisas sem lógica e que alguém tentava escondê-las, foi mais fundo. Com uma mente brilhante, encontrou uma brecha: quando localizou o homem, seduziu-o, casou-se e entrou na Fundação.
+    </p>
+  </div>
+
+  <div class="npc-bloco">
+    <h3>Ascensão</h3>
+    <p>
+      Tão inteligente e poderosa, Connie descobriu como conter várias anomalias e rapidamente ascendeu até os O-5. Foi quando tudo começou de fato. Com acesso a tudo, ela descobriu sobre tudo, inclusive o fim do mundo: as entidades, os Irmãos Morte e o fato de que eles viriam até aquela realidade. Ela mesma presenciou a Anafábula de sua realidade e bolou um plano que salvaria a realidade, embora cometesse vários erros no processo.
+    </p>
+  </div>
+
+  <div class="npc-bloco">
+    <h3>Projeto UnLondon</h3>
+    <p>
+      UnLondon foi construída por cima da passagem dos Irmãos Morte para essa realidade. Connie passou anos criando aquele universo simulado para que, quando eles chegassem, ficassem presos em uma "falsa realidade imortal". Ela sabia que seria temporário, mas, usando seus conhecimentos e poder dentro da Fundação, precisou de mais. Precisou de "Deus", ou melhor, do 343.
+    </p>
+  </div>
+
+  <div class="npc-bloco">
+    <h3>⚠️ O Plano</h3>
+    <p>
+      CEla fez um acordo: permitiria que ele realizasse um breve milagre para uma família, gerando um "filho perfeito", que em breve seria Doren. Após a permissão desse milagre, que aumentou a fé em 343 como Deus (algo que ele queria), Connie pediu que ele cumprisse a parte dele. Originalmente, ela gostaria que ele fizesse uma criação milagrosa para ela, mas isso deveria ocorrer no filho perfeito. De início, ela acreditou que esse filho era Yumei, mas, eventualmente, viu que não.
+
+Frustrada, Connie seguiu com o plano. Ela foi a uma floresta e encontrou "a Serpente" e, utilizando uma anomalia e uma das chaves de 004, adentrou a bliblioteca. Ela conversou com a Mentora, e ela decidiu ajudar. Com a ajuda da Mentora, Connie soube exatamente onde as coisas estavam e como fazer. Foi fácil até certo ponto. Obviamente, mesmo com a ajuda, ela ainda fez grande parte do trabalho. Afinal, a Mentora não deu informação completa, e grande parte era fruto dos estudos de Connie.
+
+Depois de reunir 3 seres poderosos, Connie começou a parte 2 do plano. Em Un London, ela usou a energia provinda do Deus Enforcado, junto ao acordo com a Embaixadora, para energizar aquele universo simulado e fazer o ápice da criação tecnológica humana, a fim de enganar os Irmãos Morte em sua chegada. Quando os Irmãos Morte chegassem, seu segundo filho, agora perfeito, com peças provindas de Mekhane, uma criação igual ela aprendeu com Licturde, e ainda um filho milagroso, esse ser serviria de ancora para o universo.
+
+enquanto o filho serve de ancora, Yumei cederia nucleos para manter ele vivo, afinall, seu corpo seira gravemente ferido servindo de ancora
+    </p>
+  </div>
+
+  <div class="npc-nota">
+    <p><strong>Nota:</strong>Ancora é oque mantem o universo estavel, a terra serve de ancora, caso tirem ela, seria como se o universo implodisse, não da para saber oq aconteceria, se um universo ficasse sem sua ancora</p>
+  </div>
+
+</div>
+
+  <!-- HALLE -->
+  <div class="npc-item" onclick="toggleNPC('halle')">
+    <h3>Halle — Nível 4</h3>
+  </div>
+  <div id="halle" class="npc-details">
+      <h2 class="npc-nome">Halle</h2>
+  <p class="npc-nivel">NÍVEL DE ACESSO: 04</p>
+    <div class="npc-bloco">
+        <h3>Origem</h3>
+    <p>
+      - Um cientista renomado dentro da Fundação, com Nível 4 de acesso, apenas abaixo dos O-5. Dedicou a vida ao estudo empático de anomalias humanoides. Por diversas vezes, foi cogitado para o Comitê de Ética, mas sempre recusou, pois acreditava que seria mais fácil cuidar das anomalias ao estudá-las diretamente.
+- Ex-marido de Connie. Era conhecido por ser extremamente cuidadoso com ela, que também sempre foi muito calorosa. Poucos sabiam do relacionamento antes do incidente (Yumei), mas muitos que sabiam não entendem o que levou Connie a fazer aquilo
+    </p>
+    </div>
+    <div class="npc-bloco">
+        <h3>O Ocorrido</h3>
+        <P>Depois do incidente vir à tona, Halle passou alguns meses abatido, sem realmente viver ou trabalhar de forma concreta. Porém, ao ver a filha que Connie teve, a anomalia nomeada de forma paternal por Halle como “Yumei”, tudo mudou. Halle passou a cuidar da criança como se fosse sua própria filha. Devido a características anômalas, mais evidentes aos 5 anos de idade, Yumei precisou ser contida. Ainda assim, por apelos, Halle permaneceu como cuidador, e diversas liberdades foram concedidas. Essas mesmas liberdades foram reduzidas e temporariamente cessadas após o incidente com sua figura materna, “Connie”, que quase foi morta e empurrada violentamente da escada por Yumei. Após meses, Halle insistiu na mudança e fez diversos apelos. Devido ao bom comportamento de Yumei e aos apelos de Halle, a liberdade foi concedida novamente. Halle nunca desistiu de cuidar dela.</P>
+    </div>
+  </div>
+
+  <!-- LICTURDO -->
+  <div class="npc-item" onclick="toggleNPC('licturdo')">
+    <h3>Licturdo — BioCriador</h3>
+  </div>
+  <div id="licturdo" class="npc-details">
+      <h2 class="npc-nome">Licturdo</h2>
+  <p class="npc-nivel">NÍVEL DE ACESSO: 04</p>
+    <div class="npc-bloco">
+        <h3>Origem</h3>
+    <p>
+     - Licturdo é nomeado, honorariamente, como “Pesquisador BioCriador de Vida Artificial”, sendo responsável por anomalias capazes de criar vida biológica funcional e por estudar seus possíveis usos. Por muito tempo, Licturdo foi apático, trabalhando com Connie no Projeto K4&L: um humanoide dedicado a ser, fisicamente, um soldado com potencial infinito, capaz de superar limites humanos com treino e de utilizar anomalias por possuir um método biológico de compatibilidade anômalo, podendo, assim, segurar e manusear anomalias.
+- Licturdo já teve uma esposa, que nunca soube do trabalho dele. Eles viviam alegremente no campo, longe de qualquer complicação. Porém, devido a um hiperfoco imenso no trabalho, ele se esqueceu de dar atenção à esposa, que nunca entendeu o que ele fazia, o que eventualmente levou ao término.
+    </p>
+    </div>
+    <div class="npc-bloco">
+        <h3>Filho</h3>
+        <P>- K4&L, ou “Kael”, como foi apelidado, viveu com uma parte afastada da família de Licturdo. A criação não sabe como foi feita, muito menos que Licturdo é seu pai. A ideia era manter Kael longe da Fundação para, eventualmente, trazê-lo, mas essa transição foi precoce. Após a família ser alvo de uma anomalia, Kael foi levado a Licturdo e tratado como um “tio” distante.
+- Licturdo nunca soube por que Connie se interessava pela criação de vida orgânica, mas, após a missão Alpha 10 e a descoberta do plano de Connie, foi revelado que ela queria criar um ser orgânico misturando várias coisas: uma criação de massa orgânica, da forma que Kael foi criado, mecanismos e máquinas de MekHane e um milagre de 343, para criar um ser tão resistente que sirva de âncora para o planeta, fora do próprio universo.</P>
+    </div>
+  </div>
+
+  <!-- KAEL -->
+  <div class="npc-item" onclick="toggleNPC('kael')">
+    <h3>Kael — K4&L</h3>
+  </div>
+  <div id="kael" class="npc-details">
+        <div class="npc-bloco">
+              <h2 class="npc-nome">KAEL</h2>
+  <p class="npc-nivel">NÍVEL DE ACESSO: 01</p>
+        <h3>Criação/situação</h3>
+        <P>-- Kael é um ser criado de forma artificial. Como explicado na parte do Licturdo, ele possui um senso moral de autoconservação, sendo extremamente cauteloso, e raramente recorre à violência como primeira opção. Mas, se sentir hostilidade, é o primeiro a puxar o gatilho.
+- Kael se apaixonou por Yumei durante a missão da Alfa 10, devido ao carinho recorrente que ela demonstrava por ele e aos toques físicos frequentes da mesma.
+</div>
+  </div>
+
+</section>
 
 <%- include("partials/footer") %>
