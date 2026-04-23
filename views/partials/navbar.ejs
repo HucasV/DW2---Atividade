@@ -1,9 +1,19 @@
+
 <nav>
-  <img src="/img/Logo.webp" class="logo">
   <ul>
+       <img src="/img/Logo.webp" class="logo">
     <li><a href="/">Home</a></li>
     <li><a href="/personagens">Personagens</a></li>
     <li><a href="/regras">Regras</a></li>
-    <li><a href="/historia">História</a></li>
+    <li class="perfil-nav">
+      <a href="/perfil">
+        <% if (user && user.avatar) { %>
+          <img src="/uploads/avatars/<%= user.avatar %>" class="avatar-nav">
+        <% } else { %>
+          <img src="/default-avatar.png" class="avatar-nav">
+        <% } %>
+        <span><%= user ? user.nome : 'Perfil' %></span>
+      </a>
+    </li>
   </ul>
 </nav>

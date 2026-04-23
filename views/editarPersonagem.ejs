@@ -1,0 +1,21 @@
+<h2>Editar Personagem</h2>
+
+<form action="/personagens/<%= personagem.id %>/editar" method="POST" enctype="multipart/form-data">
+
+  <input type="text" name="nome" value="<%= personagem.nome %>">
+
+  <input type="number" name="nivel" value="<%= personagem.nivel %>">
+
+  <textarea name="descricao"><%= personagem.descricao %></textarea>
+
+  <input type="number" name="forca" value="<%= personagem.forca %>">
+  <input type="number" name="agilidade" value="<%= personagem.agilidade %>">
+  <input type="number" name="constituicao" value="<%= personagem.constituicao %>">
+  <input type="number" name="intelecto" value="<%= personagem.intelecto %>">
+  <input type="number" name="atencao" value="<%= personagem.atencao %>">
+  <input type="number" name="estabilidade" value="<%= personagem.estabilidade %>">
+
+  <input type="file" name="imagem">
+
+  <button>Salvar Alterações</button>
+</form>

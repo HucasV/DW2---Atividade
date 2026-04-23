@@ -1,0 +1,879 @@
+<%- include("partials/header") %>
+<%- include("partials/navbar") %>
+
+<div class="ficha">
+
+  <h2><%= personagem.nome %></h2>
+
+  <div class="topo">
+    <% if (personagem.imagem) { %>
+      <img src="/uploads/<%= personagem.imagem %>" class="img-ficha">
+    <% } %>
+
+    <div class="info">
+      <p><strong>Nível:</strong> <%= personagem.nivel %></p>
+      <p><strong>XP:</strong> <%= personagem.xp %></p>
+
+      <div class="xp-buttons">
+        <form action="/personagens/<%= personagem.id %>/xp/add" method="POST">
+          <input type="number" name="xp" placeholder="Adicionar XP">
+          <button class="btn-seta" type="submit">+ XP</button>
+        </form>
+        <form action="/personagens/<%= personagem.id %>/xp/remove" method="POST">
+          <input type="number" name="xp" placeholder="Remover XP">
+          <button class="btn-seta" type="submit">- XP</button>
+        </form>
+      </div>
+
+      <!-- VIDA -->
+      <div class="vida-container">
+        <form action="/personagens/<%= personagem.id %>/dano" method="POST">
+          <input type="hidden" name="dano" value="1">
+          <button class="btn-seta btn-dano">⬅</button>
+        </form>
+        <div class="barra-bg">
+          <div class="barra-vida" style="width: <%= (personagem.vida_atual / vida_max) * 100 %>%"></div>
+          <div class="barra-texto-centralizado">
+            <span class="vida-atual-editable" data-id="<%= personagem.id %>" data-max="<%= vida_max %>">
+              <%= personagem.vida_atual %>
+            </span> / 
+            <span class="vida-max-editable" data-id="<%= personagem.id %>">
+              <%= vida_max %>
+            </span>
+          </div>
+        </div>
+        <form action="/personagens/<%= personagem.id %>/cura" method="POST">
+          <input type="hidden" name="cura" value="1">
+          <button class="btn-seta btn-cura">➡</button>
+        </form>
+      </div>
+
+      <!-- SANIDADE -->
+      <div class="vida-container">
+        <form action="/personagens/<%= personagem.id %>/danoSanidade" method="POST">
+          <input type="hidden" name="dano" value="1">
+          <button class="btn-seta btn-dano" type="submit">⬅</button>
+        </form>
+        <div class="barra-bg">
+          <div class="barra-sanidade" style="width: <%= (personagem.sanidade_atual / sanidade_max) * 100 %>%"></div>
+          <div class="barra-texto-centralizado">
+            <span class="sanidade-atual-editable" data-id="<%= personagem.id %>" data-max="<%= sanidade_max %>">
+              <%= personagem.sanidade_atual %>
+            </span> / 
+            <span class="sanidade-max-editable" data-id="<%= personagem.id %>">
+              <%= sanidade_max %>
+            </span>
+          </div>
+        </div>
+        <form action="/personagens/<%= personagem.id %>/curaSanidade" method="POST">
+          <input type="hidden" name="cura" value="1">
+          <button class="btn-seta btn-cura" type="submit">➡</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ATRIBUTOS -->
+  <h3>Atributos</h3>
+  <p>Pontos de atributo disponíveis: <strong id="pontos-atributo-disponiveis"><%= pontos_disponiveis_atributo %></strong> (Total: <%= pontos_totais_atributo %>)</p>
+  <div class="atributos-grid">
+    <div class="attr" data-atributo="forca">
+      <div class="attr-nome">FOR</div>
+      <div class="attr-valor"><%= personagem.forca %></div>
+      <div class="attr-buttons">
+        <button type="button" class="btn-atributo btn-seta" data-atributo="forca" data-op="aumentar" <%= pontos_disponiveis_atributo <= 0 ? 'disabled' : '' %>>+</button>
+        <button type="button" class="btn-atributo btn-seta" data-atributo="forca" data-op="diminuir" <%= personagem.forca <= 1 ? 'disabled' : '' %>>-</button>
+      </div>
+    </div>
+    <div class="attr" data-atributo="agilidade">
+      <div class="attr-nome">AGI</div>
+      <div class="attr-valor"><%= personagem.agilidade %></div>
+      <div class="attr-buttons">
+        <button type="button" class="btn-atributo btn-seta" data-atributo="agilidade" data-op="aumentar" <%= pontos_disponiveis_atributo <= 0 ? 'disabled' : '' %>>+</button>
+        <button type="button" class="btn-atributo btn-seta" data-atributo="agilidade" data-op="diminuir" <%= personagem.agilidade <= 1 ? 'disabled' : '' %>>-</button>
+      </div>
+    </div>
+    <div class="attr" data-atributo="constituicao">
+      <div class="attr-nome">CON</div>
+      <div class="attr-valor"><%= personagem.constituicao %></div>
+      <div class="attr-buttons">
+        <button type="button" class="btn-atributo btn-seta" data-atributo="constituicao" data-op="aumentar" <%= pontos_disponiveis_atributo <= 0 ? 'disabled' : '' %>>+</button>
+        <button type="button" class="btn-atributo btn-seta" data-atributo="constituicao" data-op="diminuir" <%= personagem.constituicao <= 1 ? 'disabled' : '' %>>-</button>
+      </div>
+    </div>
+    <div class="attr" data-atributo="intelecto">
+      <div class="attr-nome">INT</div>
+      <div class="attr-valor"><%= personagem.intelecto %></div>
+      <div class="attr-buttons">
+        <button type="button" class="btn-atributo btn-seta" data-atributo="intelecto" data-op="aumentar" <%= pontos_disponiveis_atributo <= 0 ? 'disabled' : '' %>>+</button>
+        <button type="button" class="btn-atributo btn-seta" data-atributo="intelecto" data-op="diminuir" <%= personagem.intelecto <= 1 ? 'disabled' : '' %>>-</button>
+      </div>
+    </div>
+    <div class="attr" data-atributo="atencao">
+      <div class="attr-nome">ATE</div>
+      <div class="attr-valor"><%= personagem.atencao %></div>
+      <div class="attr-buttons">
+        <button type="button" class="btn-atributo btn-seta" data-atributo="atencao" data-op="aumentar" <%= pontos_disponiveis_atributo <= 0 ? 'disabled' : '' %>>+</button>
+        <button type="button" class="btn-atributo btn-seta" data-atributo="atencao" data-op="diminuir" <%= personagem.atencao <= 1 ? 'disabled' : '' %>>-</button>
+      </div>
+    </div>
+    <div class="attr" data-atributo="estabilidade">
+      <div class="attr-nome">EST</div>
+      <div class="attr-valor"><%= personagem.estabilidade %></div>
+      <div class="attr-buttons">
+        <button type="button" class="btn-atributo btn-seta" data-atributo="estabilidade" data-op="aumentar" <%= pontos_disponiveis_atributo <= 0 ? 'disabled' : '' %>>+</button>
+        <button type="button" class="btn-atributo btn-seta" data-atributo="estabilidade" data-op="diminuir" <%= personagem.estabilidade <= 1 ? 'disabled' : '' %>>-</button>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3>Descrição</h3>
+  <p><%= personagem.descricao %></p>
+
+  <hr>
+
+  <!-- HABILIDADES -->
+  <div class="npc-container">
+    <h2 class="npc-nome">Habilidades</h2>
+    <p class="npc-nivel">Pontos disponíveis: <span class="highlight"><%= pontos_disponiveis %></span></p>
+
+    <div class="form-habilidade">
+      <input type="text" id="novaHabilidadeNome" placeholder="Nome da habilidade" required>
+      <textarea id="novaHabilidadeDescricao" placeholder="Descrição (opcional)" rows="2"></textarea>
+      <select id="novaHabilidadeTipo">
+        <option value="dano">Dano</option>
+        <option value="cura">Cura</option>
+      </select>
+      <select id="novaHabilidadeModo">
+        <option value="alvo_unico">Alvo único</option>
+        <option value="area">Área</option>
+      </select>
+      <select id="novaHabilidadeTipoAcao">
+        <option value="ativa">Ativa</option>
+        <option value="passiva">Passiva</option>
+      </select>
+      <textarea id="novaHabilidadeEfeito" placeholder="Efeito especial (opcional)" rows="2"></textarea>
+      <button type="button" id="btnCriarHabilidade">Criar</button>
+    </div>
+
+    <button type="button" id="btnAbrirBiblioteca" class="btn-seta">📚 Biblioteca de Habilidades</button>
+
+    <div id="modalBiblioteca" style="display:none; position:fixed; top:20%; left:30%; background:#0f0f0f; border:1px solid #00ff9c; padding:20px; z-index:1000; width:400px;">
+      <h3>Biblioteca de Habilidades</h3>
+      <div class="tabs">
+        <button id="tabGerais" class="tab-btn ativo">Gerais</button>
+        <button id="tabPessoais" class="tab-btn">Pessoais</button>
+      </div>
+      <div id="listaBiblioteca" style="max-height:300px; overflow-y:auto;"></div>
+      <button id="btnFecharModal" class="btn-seta" style="margin-top:10px;">Fechar</button>
+    </div>
+
+    <div class="habilidades-lista">
+      <% if (habilidades.length === 0) { %>
+        <p>Nenhuma habilidade criada.</p>
+      <% } else { %>
+        <% habilidades.forEach(h => { %>
+          <div class="npc-bloco">
+            <h3><%= h.nome %> (Nv. <%= h.nivel %>) <span class="valor-habilidade">[<%= h.valor %>]</span></h3>
+            <p><strong>Descrição:</strong> <%= h.descricao || '—' %></p>
+            <p><strong>Tipo:</strong> <%= h.tipo %> | <strong>Modo:</strong> <%= h.modo %> | <strong>Ação:</strong> <%= h.tipo_acao %></p>
+            <p><strong>Custo:</strong> <% if (h.custo_sanidade > 0) { %><%= h.custo_sanidade %> Sanidade<% } else { %>Nenhum<% } %></p>
+            <% if (h.efeito) { %>
+              <p><strong>Efeito:</strong> <%= h.efeito %></p>
+            <% } %>
+            <div class="habilidade-buttons">
+              <% if (h.nivel > 1) { %>
+                <button class="btn-diminuir-habilidade btn-seta" data-id="<%= h.id %>">⬇</button>
+              <% } %>
+              <% if (pontos_disponiveis > 0 && h.is_upgradeable) { %>
+  <button class="btn-upar-habilidade btn-seta" data-id="<%= h.id %>">⬆ Upar</button>
+<% } else if (!h.is_upgradeable) { %>
+  <span style="opacity:0.5;">(Fixa)</span>
+<% } else { %>
+  <button disabled>Sem pontos</button>
+<% } %>
+              <button class="btn-deletar-habilidade btn-seta" data-id="<%= h.id %>">🗑️</button>
+              <button class="btn-salvar-biblioteca btn-seta" data-id="<%= h.id %>">📚 Salvar</button>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+
+  <hr>
+
+  <form action="/personagens/<%= personagem.id %>/delete" method="POST">
+    <button class="btn-delete" onclick="return confirm('Tem certeza que deseja apagar este personagem?')">
+      🗑️ Deletar Personagem
+    </button>
+  </form>
+  <a href="/personagens">⬅ Voltar</a>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM carregado - script inicializado');
+
+  let salvando = false;
+
+  // ======================
+  // SALVAR VIDA E SANIDADE
+  // ======================
+  async function salvarVida(id, campo, valor) {
+    if (salvando) return;
+    salvando = true;
+    try {
+      const response = await fetch(`/personagens/${id}/editarVidaJson`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [campo]: valor })
+      });
+      const data = await response.json();
+      if (response.ok && data.ok) {
+        const resDados = await fetch(`/personagens/${id}/dadosJson`);
+        const novosDados = await resDados.json();
+        if (resDados.ok) atualizarInterface(novosDados);
+      } else {
+        alert('Erro ao salvar vida: ' + (data.erro || 'Falha'));
+      }
+    } catch (err) {
+      alert('Erro de conexão (vida)');
+    } finally {
+      salvando = false;
+    }
+  }
+
+  async function salvarSanidade(id, campo, valor) {
+    if (salvando) return;
+    salvando = true;
+    try {
+      const response = await fetch(`/personagens/${id}/editarSanidadeJson`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [campo]: valor })
+      });
+      const data = await response.json();
+      if (response.ok && data.ok) {
+        const resDados = await fetch(`/personagens/${id}/dadosJson`);
+        const novosDados = await resDados.json();
+        if (resDados.ok) atualizarInterface(novosDados);
+      } else {
+        alert('Erro ao salvar sanidade: ' + (data.erro || 'Falha'));
+      }
+    } catch (err) {
+      alert('Erro de conexão (sanidade)');
+    } finally {
+      salvando = false;
+    }
+  }
+
+  // ======================
+  // ATUALIZAR INTERFACE
+  // ======================
+  window.atualizarInterface = function(dados) {
+    const vidaAtualSpan = document.querySelector('.vida-atual-editable');
+    const vidaMaxSpan = document.querySelector('.vida-max-editable');
+    if (vidaAtualSpan) {
+      vidaAtualSpan.innerText = dados.vida_atual;
+      vidaAtualSpan.setAttribute('data-max', dados.vida_max);
+    }
+    if (vidaMaxSpan) vidaMaxSpan.innerText = dados.vida_max;
+    const barraVida = document.querySelector('.barra-vida');
+    if (barraVida) barraVida.style.width = `${(dados.vida_atual / dados.vida_max) * 100}%`;
+
+    const sanidadeAtualSpan = document.querySelector('.sanidade-atual-editable');
+    const sanidadeMaxSpan = document.querySelector('.sanidade-max-editable');
+    if (sanidadeAtualSpan) {
+      sanidadeAtualSpan.innerText = dados.sanidade_atual;
+      sanidadeAtualSpan.setAttribute('data-max', dados.sanidade_max);
+    }
+    if (sanidadeMaxSpan) sanidadeMaxSpan.innerText = dados.sanidade_max;
+    const barraSanidade = document.querySelector('.barra-sanidade');
+    if (barraSanidade) barraSanidade.style.width = `${(dados.sanidade_atual / dados.sanidade_max) * 100}%`;
+
+    const pontosAtributoSpan = document.querySelector('#pontos-atributo-disponiveis');
+    if (pontosAtributoSpan && dados.pontos_disponiveis_atributo !== undefined) {
+      pontosAtributoSpan.innerText = dados.pontos_disponiveis_atributo;
+    }
+  };
+
+  // ======================
+  // EDITOR IN-PLACE
+  // ======================
+  function criarEditor(span, tipo, sistema) {
+    span.addEventListener('click', function editar(e) {
+      e.stopPropagation();
+      if (span.querySelector('input')) return;
+
+      const valorAtual = parseInt(span.innerText);
+      const id = span.getAttribute('data-id');
+      const maxValor = tipo === 'atual' ? parseInt(span.getAttribute('data-max')) : null;
+
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.value = valorAtual;
+      input.classList.add(sistema === 'vida' ? 'editar-vida-input' : 'editar-sanidade-input');
+      if (tipo === 'atual') {
+        input.min = 0;
+        if (maxValor) input.max = maxValor;
+      } else {
+        input.min = 1;
+      }
+
+      span.innerHTML = '';
+      span.appendChild(input);
+      input.focus();
+
+      function finalizar() {
+        let novo = parseInt(input.value);
+        if (isNaN(novo)) novo = tipo === 'atual' ? 0 : 1;
+        if (tipo === 'atual') {
+          if (novo > maxValor) novo = maxValor;
+          if (novo < 0) novo = 0;
+          if (sistema === 'vida') salvarVida(id, 'vida_atual', novo);
+          else salvarSanidade(id, 'sanidade_atual', novo);
+        } else {
+          if (novo < 1) novo = 1;
+          if (sistema === 'vida') salvarVida(id, 'vida_max_custom', novo);
+          else salvarSanidade(id, 'sanidade_max_custom', novo);
+        }
+      }
+
+      input.addEventListener('blur', finalizar);
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') finalizar();
+      });
+    });
+  }
+
+  document.querySelectorAll('.vida-atual-editable').forEach(span => criarEditor(span, 'atual', 'vida'));
+  document.querySelectorAll('.vida-max-editable').forEach(span => criarEditor(span, 'max', 'vida'));
+  document.querySelectorAll('.sanidade-atual-editable').forEach(span => criarEditor(span, 'atual', 'sanidade'));
+  document.querySelectorAll('.sanidade-max-editable').forEach(span => criarEditor(span, 'max', 'sanidade'));
+
+  // ======================
+  // FUNÇÃO PARA ATUALIZAR O CARD DA HABILIDADE
+  // ======================
+  function atualizarCardHabilidade(card, dados) {
+  card.innerHTML = `
+      <h3>${dados.nome} (Nv. ${dados.nivel}) <span class="valor-habilidade">[${dados.valor}]</span></h3>
+      <p><strong>Descrição:</strong> ${dados.descricao || '—'}</p>
+      <p><strong>Tipo:</strong> ${dados.tipo} | <strong>Modo:</strong> ${dados.modo} | <strong>Ação:</strong> ${dados.tipo_acao}</p>
+      <p><strong>Custo:</strong> 
+        ${dados.custo_vida > 0 ? `${dados.custo_vida} Vida` : ''}
+        ${dados.custo_sanidade > 0 ? `${dados.custo_sanidade} Sanidade` : ''}
+        ${(!dados.custo_vida && !dados.custo_sanidade) ? 'Nenhum' : ''}
+      </p>
+      ${dados.efeito ? `<p><strong>Efeito:</strong> ${dados.efeito}</p>` : ''}
+      <div class="habilidade-buttons">
+      ${dados.nivel > 1 ? `<button class="btn-diminuir-habilidade btn-seta" data-id="${dados.id}">⬇</button>` : ''}
+      ${dados.is_upgradeable && dados.pontos_disponiveis > 0 ? 
+        `<button class="btn-upar-habilidade btn-seta" data-id="${dados.id}">⬆ Upar</button>` : 
+        (dados.is_upgradeable ? '<button disabled>Sem pontos</button>' : '<span style="opacity:0.5;">(Fixa)</span>')}
+      <button class="btn-deletar-habilidade btn-seta" data-id="${dados.id}">🗑️</button>
+      <button class="btn-salvar-biblioteca btn-seta" data-id="${dados.id}">📚 Salvar</button>
+    </div>
+  `;
+  
+}
+
+  // ======================
+  // CRIAR HABILIDADE
+  // ======================
+  document.getElementById('btnCriarHabilidade').addEventListener('click', async () => {
+    const nome = document.getElementById('novaHabilidadeNome').value.trim();
+    const descricao = document.getElementById('novaHabilidadeDescricao').value.trim();
+    const tipo = document.getElementById('novaHabilidadeTipo').value;
+    const modo = document.getElementById('novaHabilidadeModo').value;
+    const tipo_acao = document.getElementById('novaHabilidadeTipoAcao').value;
+    const efeito = document.getElementById('novaHabilidadeEfeito').value.trim();
+    const id_personagem = <%= personagem.id %>;
+
+    if (!nome) return alert('Nome é obrigatório');
+
+    try {
+      const response = await fetch('/habilidades/criarJson', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, descricao, tipo, modo, tipo_acao, efeito, id_personagem })
+      });
+      const data = await response.json();
+      if (response.ok && data.ok) {
+        const container = document.querySelector('.habilidades-lista');
+        const novaDiv = document.createElement('div');
+        novaDiv.className = 'npc-bloco';
+        atualizarCardHabilidade(novaDiv, {
+          id: data.habilidade.id,
+          nome: data.habilidade.nome,
+          nivel: data.habilidade.nivel,
+          valor: data.habilidade.valor,
+          descricao: data.habilidade.descricao,
+          tipo: data.habilidade.tipo,
+          modo: data.habilidade.modo,
+          tipo_acao: data.habilidade.tipo_acao,
+          custo_vida: data.habilidade.custo_vida,
+          custo_sanidade: data.habilidade.custo_sanidade,
+          efeito: data.habilidade.efeito,
+          pontos_disponiveis: data.pontos_disponiveis,
+          is_upgradeable: data.habilidade.is_upgradeable !== undefined ? data.habilidade.is_upgradeable : 0 
+        });
+        container.appendChild(novaDiv);
+        document.querySelector('.highlight').innerText = data.pontos_disponiveis;
+        document.getElementById('novaHabilidadeNome').value = '';
+        document.getElementById('novaHabilidadeDescricao').value = '';
+        document.getElementById('novaHabilidadeEfeito').value = '';
+      } else {
+        alert(data.erro || 'Erro ao criar habilidade');
+      }
+    } catch (err) {
+      alert('Erro de conexão');
+    }
+  });
+
+  // ======================
+  // UPAR HABILIDADE
+  // ======================
+  document.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('btn-upar-habilidade')) {
+      const id = e.target.getAttribute('data-id');
+      try {
+        const response = await fetch(`/habilidades/${id}/uparJson`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        if (response.ok && data.ok) {
+          const bloco = e.target.closest('.npc-bloco');
+          atualizarCardHabilidade(bloco, {
+            id: data.habilidade.id,
+            nome: data.habilidade.nome,
+            nivel: data.habilidade.nivel,
+            valor: data.habilidade.valor,
+            descricao: data.habilidade.descricao,
+            tipo: data.habilidade.tipo,
+            modo: data.habilidade.modo,
+            tipo_acao: data.habilidade.tipo_acao,
+            custo_vida: data.habilidade.custo_vida,
+            custo_sanidade: data.habilidade.custo_sanidade,
+            efeito: data.habilidade.efeito,
+            pontos_disponiveis: data.pontos_disponiveis,
+            is_upgradeable: data.habilidade.is_upgradeable !== undefined ? data.habilidade.is_upgradeable : 0 
+
+          });
+          document.querySelector('.highlight').innerText = data.pontos_disponiveis;
+          const pontos = data.pontos_disponiveis;
+          document.querySelectorAll('.btn-upar-habilidade').forEach(btn => {
+            btn.disabled = (pontos <= 0);
+          });
+        } else {
+          alert(data.erro || 'Erro ao upar habilidade');
+        }
+      } catch (err) {
+        alert('Erro de conexão');
+      }
+    }
+  });
+
+  // ======================
+  // DIMINUIR HABILIDADE
+  // ======================
+  document.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('btn-diminuir-habilidade')) {
+      const id = e.target.getAttribute('data-id');
+      try {
+        const response = await fetch(`/habilidades/${id}/diminuirJson`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        if (response.ok && data.ok) {
+          const bloco = e.target.closest('.npc-bloco');
+          atualizarCardHabilidade(bloco, {
+            id: data.habilidade.id,
+            nome: data.habilidade.nome,
+            nivel: data.habilidade.nivel,
+            valor: data.habilidade.valor,
+            descricao: data.habilidade.descricao,
+            tipo: data.habilidade.tipo,
+            modo: data.habilidade.modo,
+            tipo_acao: data.habilidade.tipo_acao,
+            custo_vida: data.habilidade.custo_vida,
+            custo_sanidade: data.habilidade.custo_sanidade,
+            efeito: data.habilidade.efeito,
+            pontos_disponiveis: data.pontos_disponiveis,
+            is_upgradeable: data.habilidade.is_upgradeable !== undefined ? data.habilidade.is_upgradeable : 0 
+          });
+          document.querySelector('.highlight').innerText = data.pontos_disponiveis;
+          const pontos = data.pontos_disponiveis;
+          document.querySelectorAll('.btn-upar-habilidade').forEach(btn => {
+            btn.disabled = (pontos <= 0);
+          });
+        } else {
+          alert(data.erro || 'Erro ao diminuir habilidade');
+        }
+      } catch (err) {
+        alert('Erro de conexão');
+      }
+    }
+  });
+
+  // ======================
+  // DELETAR HABILIDADE
+  // ======================
+  document.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('btn-deletar-habilidade')) {
+      if (!confirm('Tem certeza que deseja deletar esta habilidade?')) return;
+      const id = e.target.getAttribute('data-id');
+      try {
+        const response = await fetch(`/habilidades/${id}/deletarJson`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        if (response.ok && data.ok) {
+          const bloco = e.target.closest('.npc-bloco');
+          bloco.remove();
+          document.querySelector('.highlight').innerText = data.pontos_disponiveis;
+          const lista = document.querySelector('.habilidades-lista');
+          if (lista.children.length === 0) {
+            lista.innerHTML = '<p>Nenhuma habilidade criada.</p>';
+          }
+        } else {
+          alert(data.erro || 'Erro ao deletar habilidade');
+        }
+      } catch (err) {
+        alert('Erro de conexão');
+      }
+    }
+  });
+
+  // ======================
+  // SALVAR HABILIDADE NA BIBLIOTECA PESSOAL
+  // ======================
+  document.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('btn-salvar-biblioteca')) {
+      const id_habilidade = e.target.getAttribute('data-id');
+      try {
+        const response = await fetch('/habilidades/salvarNaBiblioteca', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id_habilidade })
+        });
+        const data = await response.json();
+        if (response.ok && data.ok) {
+          alert('Habilidade salva na sua biblioteca pessoal!');
+        } else {
+          alert(data.erro || 'Erro ao salvar');
+        }
+      } catch (err) {
+        alert('Erro de conexão');
+      }
+    }
+  });
+
+  // ======================
+  // BIBLIOTECA DE HABILIDADES (COM ABAS E DIVINDADES)
+  // ======================
+  let habilidadesGerais = {}; // objeto com chave = divindade, valor = array de habilidades
+  let habilidadesPessoais = [];
+  let abaAtual = 'gerais';
+  let divindadeSelecionada = null;
+
+  const modal = document.getElementById('modalBiblioteca');
+  const btnAbrir = document.getElementById('btnAbrirBiblioteca');
+  const btnFechar = document.getElementById('btnFecharModal');
+  const listaDiv = document.getElementById('listaBiblioteca');
+  const tabGerais = document.getElementById('tabGerais');
+  const tabPessoais = document.getElementById('tabPessoais');
+
+  function renderizarLista() {
+    if (abaAtual === 'pessoais') {
+      const lista = habilidadesPessoais;
+      listaDiv.innerHTML = '';
+      if (!lista || lista.length === 0) {
+        listaDiv.innerHTML = '<p>Nenhuma habilidade pessoal disponível.</p>';
+        return;
+      }
+    lista.forEach(hab => {
+  const div = document.createElement('div');
+  div.className = 'npc-bloco';
+  div.style.marginBottom = '10px';
+  div.innerHTML = `
+    <strong>${hab.nome}</strong> (${hab.tipo}, ${hab.modo}) 
+    <button class="btn-copiar-habilidade" data-id="${hab.id}" data-tipo="pessoal">➕ Copiar</button>
+    <button class="btn-deletar-biblioteca btn-seta" data-id="${hab.id}" style="margin-left:10px;">🗑️</button>
+  `;
+  listaDiv.appendChild(div);
+});
+    } else {
+      // Aba Gerais: mostrar botões de divindades e habilidades selecionadas
+      if (!divindadeSelecionada) {
+        listaDiv.innerHTML = '';
+        const divindades = Object.keys(habilidadesGerais);
+        if (divindades.length === 0) {
+          listaDiv.innerHTML = '<p>Nenhuma divindade disponível.</p>';
+          return;
+        }
+        divindades.forEach(div => {
+          const btnDiv = document.createElement('button');
+          btnDiv.className = 'btn-seta';
+          btnDiv.style.margin = '5px';
+          btnDiv.innerText = div;
+          btnDiv.addEventListener('click', () => {
+            divindadeSelecionada = div;
+            renderizarLista();
+          });
+          listaDiv.appendChild(btnDiv);
+        });
+      } else {
+        const habilidades = habilidadesGerais[divindadeSelecionada] || [];
+        listaDiv.innerHTML = `<button class="btn-seta" id="voltarDivindades">⬅ Voltar</button><hr>`;
+        if (habilidades.length === 0) {
+          listaDiv.innerHTML += '<p>Nenhuma habilidade encontrada para esta divindade.</p>';
+        } else {
+          habilidades.forEach(hab => {
+            const div = document.createElement('div');
+            div.className = 'npc-bloco';
+            div.style.marginBottom = '10px';
+            div.innerHTML = `
+              <strong>${hab.nome}</strong> (Nível ${hab.nivel}) - ${hab.dano || 'Sem dano'}<br>
+              <small>${hab.descricao}</small><br>
+              <button class="btn-copiar-habilidade-divindade" data-id="${hab.id}">➕ Copiar</button>
+            `;
+            listaDiv.appendChild(div);
+          });
+        }
+        document.getElementById('voltarDivindades')?.addEventListener('click', () => {
+          divindadeSelecionada = null;
+          renderizarLista();
+        });
+      }
+    }
+  }
+
+  function ativarAba(aba) {
+    abaAtual = aba;
+    divindadeSelecionada = null;
+    if (aba === 'gerais') {
+      tabGerais.classList.add('ativo');
+      tabPessoais.classList.remove('ativo');
+    } else {
+      tabPessoais.classList.add('ativo');
+      tabGerais.classList.remove('ativo');
+    }
+    renderizarLista();
+  }
+
+  btnAbrir.addEventListener('click', async () => {
+    try {
+      const responseGerais = await fetch('/habilidades/divindades');
+      const dataGerais = await responseGerais.json();
+      habilidadesGerais = dataGerais.divindades || {};
+
+      const responsePessoais = await fetch('/habilidades/biblioteca');
+      const dataPessoais = await responsePessoais.json();
+      habilidadesPessoais = dataPessoais.pessoais || [];
+
+      ativarAba('gerais');
+      modal.style.display = 'block';
+    } catch (err) {
+      alert('Erro ao carregar biblioteca');
+    }
+  });
+
+  tabGerais.addEventListener('click', () => ativarAba('gerais'));
+  tabPessoais.addEventListener('click', () => ativarAba('pessoais'));
+  btnFechar.addEventListener('click', () => {
+    modal.style.display = 'none';
+    divindadeSelecionada = null;
+  });
+// Deletar habilidade da biblioteca pessoal
+document.addEventListener('click', async (e) => {
+  if (e.target.classList.contains('btn-deletar-biblioteca')) {
+    if (!confirm('Tem certeza que deseja excluir esta habilidade da sua biblioteca?')) return;
+    const id_habilidade = e.target.getAttribute('data-id');
+    try {
+      const response = await fetch('/habilidades/biblioteca/deletar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_habilidade })
+      });
+      const data = await response.json();
+      if (response.ok && data.ok) {
+        // Remove o elemento da lista sem recarregar a página
+        const div = e.target.closest('.npc-bloco');
+        div.remove();
+        // Se a lista ficar vazia, exibe mensagem
+        const listaDiv = document.getElementById('listaBiblioteca');
+        if (listaDiv.children.length === 0) {
+          listaDiv.innerHTML = '<p>Nenhuma habilidade pessoal disponível.</p>';
+        }
+      } else {
+        alert(data.erro || 'Erro ao excluir');
+      }
+    } catch (err) {
+      alert('Erro de conexão');
+    }
+  }
+});
+  // Copiar habilidade pessoal
+  document.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('btn-copiar-habilidade') && e.target.getAttribute('data-tipo') === 'pessoal') {
+      const id_habilidade_biblioteca = e.target.getAttribute('data-id');
+      const id_personagem = <%= personagem.id %>;
+      try {
+        const response = await fetch('/habilidades/copiarJson', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id_habilidade_biblioteca, id_personagem })
+        });
+        const data = await response.json();
+        if (response.ok && data.ok) {
+          const container = document.querySelector('.habilidades-lista');
+          const novaDiv = document.createElement('div');
+          novaDiv.className = 'npc-bloco';
+          atualizarCardHabilidade(novaDiv, {
+            id: data.habilidade.id,
+            nome: data.habilidade.nome,
+            nivel: data.habilidade.nivel,
+            valor: data.habilidade.valor,
+            descricao: data.habilidade.descricao || '',
+            tipo: data.habilidade.tipo,
+            modo: data.habilidade.modo,
+            tipo_acao: 'ativa',
+            custo_vida: 0,
+            custo_sanidade: 0,
+            efeito: '',
+            pontos_disponiveis: data.pontos_disponiveis,
+           is_upgradeable: data.habilidade.is_upgradeable !== undefined ? data.habilidade.is_upgradeable : 0 
+          });
+          container.appendChild(novaDiv);
+          document.querySelector('.highlight').innerText = data.pontos_disponiveis;
+          modal.style.display = 'none';
+        } else {
+          alert(data.erro || 'Erro ao copiar habilidade');
+        }
+      } catch (err) {
+        alert('Erro de conexão');
+      }
+    }
+  });
+
+  // Copiar habilidade de divindade
+  document.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('btn-copiar-habilidade-divindade')) {
+      const id_habilidade_divindade = e.target.getAttribute('data-id');
+      const id_personagem = <%= personagem.id %>;
+      try {
+        const response = await fetch('/habilidades/copiarDivindade', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id_habilidade_divindade, id_personagem })
+        });
+        const data = await response.json();
+        if (response.ok && data.ok) {
+          const container = document.querySelector('.habilidades-lista');
+          const novaDiv = document.createElement('div');
+          novaDiv.className = 'npc-bloco';
+          atualizarCardHabilidade(novaDiv, {
+            id: data.habilidade.id,
+            nome: data.habilidade.nome,
+            nivel: data.habilidade.nivel,
+            valor: data.habilidade.valor,
+            descricao: data.habilidade.descricao || '',
+            tipo: data.habilidade.tipo,
+            modo: data.habilidade.modo,
+            tipo_acao: data.habilidade.tipo_acao || 'ativa',
+            custo_vida: data.habilidade.custo_vida || 0,
+            custo_sanidade: data.habilidade.custo_sanidade || 0,
+            efeito: data.habilidade.efeito || '',
+            pontos_disponiveis: data.pontos_disponiveis,
+            is_upgradeable: data.habilidade.is_upgradeable !== undefined ? data.habilidade.is_upgradeable : 0 
+          });
+          container.appendChild(novaDiv);
+          document.querySelector('.highlight').innerText = data.pontos_disponiveis;
+          modal.style.display = 'none';
+        } else {
+          alert(data.erro || 'Erro ao copiar habilidade da divindade');
+        }
+      } catch (err) {
+        alert('Erro de conexão');
+      }
+    }
+  });
+
+  // ======================
+  // ATRIBUTOS (AUMENTAR/DIMINUIR)
+  // ======================
+  const botoesAtributo = document.querySelectorAll('.btn-atributo');
+  console.log('Botões de atributo encontrados:', botoesAtributo.length);
+  botoesAtributo.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const atributo = btn.getAttribute('data-atributo');
+      const operacao = btn.getAttribute('data-op');
+      const id = <%= personagem.id %>;
+      try {
+        const response = await fetch(`/personagens/${id}/atributo/${atributo}/${operacao}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        if (response.ok && data.ok) {
+          const attrDiv = document.querySelector(`.attr[data-atributo="${atributo}"]`);
+          if (attrDiv) {
+            const valorSpan = attrDiv.querySelector('.attr-valor');
+            if (valorSpan) valorSpan.innerText = data.novoValor;
+          }
+          const vidaAtualSpan = document.querySelector('.vida-atual-editable');
+          const vidaMaxSpan = document.querySelector('.vida-max-editable');
+          if (vidaAtualSpan) {
+            vidaAtualSpan.innerText = data.vida_atual;
+            vidaAtualSpan.setAttribute('data-max', data.vida_max);
+          }
+          if (vidaMaxSpan) vidaMaxSpan.innerText = data.vida_max;
+          const barraVida = document.querySelector('.barra-vida');
+          if (barraVida) barraVida.style.width = `${(data.vida_atual / data.vida_max) * 100}%`;
+          const resDados = await fetch(`/personagens/${id}/dadosJson`);
+          const novosDados = await resDados.json();
+          atualizarInterface(novosDados);
+          const sanidadeAtualSpan = document.querySelector('.sanidade-atual-editable');
+          const sanidadeMaxSpan = document.querySelector('.sanidade-max-editable');
+          if (sanidadeAtualSpan) {
+            sanidadeAtualSpan.innerText = data.sanidade_atual;
+            sanidadeAtualSpan.setAttribute('data-max', data.sanidade_max);
+          }
+          if (sanidadeMaxSpan) sanidadeMaxSpan.innerText = data.sanidade_max;
+          const barraSanidade = document.querySelector('.barra-sanidade');
+          if (barraSanidade) barraSanidade.style.width = `${(data.sanidade_atual / data.sanidade_max) * 100}%`;
+
+          const pontosSpan = document.querySelector('#pontos-atributo-disponiveis');
+          if (pontosSpan) pontosSpan.innerText = data.pontos_disponiveis_atributo;
+
+          const todosAumentar = document.querySelectorAll('.btn-atributo[data-op="aumentar"]');
+          if (data.pontos_disponiveis_atributo <= 0) {
+            todosAumentar.forEach(btn => btn.disabled = true);
+          } else {
+            todosAumentar.forEach(btn => btn.disabled = false);
+          }
+
+          if (attrDiv) {
+            const btnDiminuir = attrDiv.querySelector('.btn-atributo[data-op="diminuir"]');
+            if (btnDiminuir) btnDiminuir.disabled = (data.novoValor <= 1);
+          }
+        } else {
+          alert(data.erro || 'Erro ao alterar atributo');
+        }
+      } catch (err) {
+        console.error('Fetch error:', err);
+        alert('Erro de conexão com o servidor');
+      }
+    });
+  });
+});
+</script>

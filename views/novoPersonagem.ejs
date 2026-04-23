@@ -1,0 +1,237 @@
+<%- include("partials/header") %>
+<%- include("partials/navbar") %>
+
+<div class="form-container">
+
+  <h2>CRIAR PERSONAGEM</h2>
+
+  <form action="/personagens" method="POST" enctype="multipart/form-data" id="formCriar">
+
+    <!-- INFO BÁSICA -->
+    <div class="form-bloco">
+      <h3>Informações</h3>
+
+      <input type="text" name="nome" placeholder="Nome do personagem" required>
+
+      <!-- Nível fixo em 1 (enviado como hidden) -->
+      <input type="hidden" name="nivel" value="1">
+
+      <textarea name="descricao" placeholder="Descrição"></textarea>
+    </div>
+
+    <!-- ATRIBUTOS COM PONTOS LIMITADOS -->
+    <div class="form-bloco">
+      <h3>Atributos</h3>
+    <p>Pontos de atributo disponíveis: <strong id="pontos-atributo-disponiveis"><%= pontos_disponiveis_atributo %></strong> (Total: <%= pontos_totais_atributo %>)</p>
+      <p>Valor mínimo 1, máximo ilimitado (limitado pelos pontos).</p>
+
+      <div class="atributos-grid-criacao">
+        <!-- Força -->
+        <div class="attr-criacao">
+          <label>Força</label>
+          <div class="attr-value">
+            <span id="forca-val">1</span>
+          </div>
+          <div class="attr-buttons">
+            <button type="button" class="btn-seta" data-atributo="forca" data-op="mais">+</button>
+            <button type="button" class="btn-seta" data-atributo="forca" data-op="menos">-</button>
+          </div>
+          <input type="hidden" name="forca" id="forca-input" value="1">
+        </div>
+        <!-- Agilidade -->
+        <div class="attr-criacao">
+          <label>Agilidade</label>
+          <div class="attr-value">
+            <span id="agilidade-val">1</span>
+          </div>
+          <div class="attr-buttons">
+            <button type="button" class="btn-seta" data-atributo="agilidade" data-op="mais">+</button>
+            <button type="button" class="btn-seta" data-atributo="agilidade" data-op="menos">-</button>
+          </div>
+          <input type="hidden" name="agilidade" id="agilidade-input" value="1">
+        </div>
+        <!-- Constituição -->
+        <div class="attr-criacao">
+          <label>Constituição</label>
+          <div class="attr-value">
+            <span id="constituicao-val">1</span>
+          </div>
+          <div class="attr-buttons">
+            <button type="button" class="btn-seta" data-atributo="constituicao" data-op="mais">+</button>
+            <button type="button" class="btn-seta" data-atributo="constituicao" data-op="menos">-</button>
+          </div>
+          <input type="hidden" name="constituicao" id="constituicao-input" value="1">
+        </div>
+        <!-- Intelecto -->
+        <div class="attr-criacao">
+          <label>Intelecto</label>
+          <div class="attr-value">
+            <span id="intelecto-val">1</span>
+          </div>
+          <div class="attr-buttons">
+            <button type="button" class="btn-seta" data-atributo="intelecto" data-op="mais">+</button>
+            <button type="button" class="btn-seta" data-atributo="intelecto" data-op="menos">-</button>
+          </div>
+          <input type="hidden" name="intelecto" id="intelecto-input" value="1">
+        </div>
+        <!-- Atenção -->
+        <div class="attr-criacao">
+          <label>Atenção</label>
+          <div class="attr-value">
+            <span id="atencao-val">1</span>
+          </div>
+          <div class="attr-buttons">
+            <button type="button" class="btn-seta" data-atributo="atencao" data-op="mais">+</button>
+            <button type="button" class="btn-seta" data-atributo="atencao" data-op="menos">-</button>
+          </div>
+          <input type="hidden" name="atencao" id="atencao-input" value="1">
+        </div>
+        <!-- Estabilidade -->
+        <div class="attr-criacao">
+          <label>Estabilidade</label>
+          <div class="attr-value">
+            <span id="estabilidade-val">1</span>
+          </div>
+          <div class="attr-buttons">
+            <button type="button" class="btn-seta" data-atributo="estabilidade" data-op="mais">+</button>
+            <button type="button" class="btn-seta" data-atributo="estabilidade" data-op="menos">-</button>
+          </div>
+          <input type="hidden" name="estabilidade" id="estabilidade-input" value="1">
+        </div>
+      </div>
+    </div>
+
+    <!-- IMAGEM -->
+    <div class="form-bloco">
+      <h3>Aparência</h3>
+      <label class="file-upload">
+        Escolher Imagem
+        <input type="file" name="imagem">
+      </label>
+    </div>
+
+    <button type="submit" class="btn-seta" id="btn-criar">Criar Personagem</button>
+
+  </form>
+</div>
+
+<style>
+.atributos-grid-criacao {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 15px;
+}
+.attr-criacao {
+  background: #111;
+  border: 1px solid #00ff9c;
+  border-radius: 8px;
+  text-align: center;
+  padding: 10px;
+}
+.attr-criacao label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+.attr-value {
+  font-size: 1.5em;
+  margin: 5px 0;
+}
+.attr-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const pontosTotais = 21; // nível 1
+  let pontosUsados = 0;
+
+  const atributos = ['forca', 'agilidade', 'constituicao', 'intelecto', 'atencao', 'estabilidade'];
+  const valores = {};
+
+  // Inicializa valores
+  atributos.forEach(attr => {
+    valores[attr] = 1;
+    document.getElementById(`${attr}-val`).innerText = 1;
+    document.getElementById(`${attr}-input`).value = 1;
+  });
+
+  function calcularPontosUsados() {
+    let total = 0;
+    for (let attr of atributos) {
+      total += valores[attr] - 1;
+    }
+    return total;
+  }
+
+  function atualizarInterface() {
+    pontosUsados = calcularPontosUsados();
+    const disponiveis = pontosTotais - pontosUsados;
+    document.getElementById('pontos-disponiveis').innerText = disponiveis;
+    for (let attr of atributos) {
+      const maisBtn = document.querySelector(`button[data-atributo="${attr}"][data-op="mais"]`);
+      const menosBtn = document.querySelector(`button[data-atributo="${attr}"][data-op="menos"]`);
+      if (disponiveis <= 0) {
+        maisBtn.disabled = true;
+      } else {
+        maisBtn.disabled = false;
+      }
+      if (valores[attr] <= 1) {
+        menosBtn.disabled = true;
+      } else {
+        menosBtn.disabled = false;
+      }
+    }
+  }
+
+  function alterarAtributo(attr, operacao) {
+    if (operacao === 'mais') {
+      const disponiveis = pontosTotais - calcularPontosUsados();
+      if (disponiveis > 0) {
+        valores[attr]++;
+        document.getElementById(`${attr}-val`).innerText = valores[attr];
+        document.getElementById(`${attr}-input`).value = valores[attr];
+        atualizarInterface();
+      } else {
+        alert('Sem pontos disponíveis!');
+      }
+    } else if (operacao === 'menos') {
+      if (valores[attr] > 1) {
+        valores[attr]--;
+        document.getElementById(`${attr}-val`).innerText = valores[attr];
+        document.getElementById(`${attr}-input`).value = valores[attr];
+        atualizarInterface();
+      } else {
+        alert('Valor mínimo é 1.');
+      }
+    }
+  }
+
+  // Adiciona eventos
+  for (let attr of atributos) {
+    const mais = document.querySelector(`button[data-atributo="${attr}"][data-op="mais"]`);
+    const menos = document.querySelector(`button[data-atributo="${attr}"][data-op="menos"]`);
+    if (mais) mais.addEventListener('click', () => alterarAtributo(attr, 'mais'));
+    if (menos) menos.addEventListener('click', () => alterarAtributo(attr, 'menos'));
+  }
+
+  const form = document.getElementById('formCriar');
+  form.addEventListener('submit', function(e) {
+    const disponiveis = pontosTotais - calcularPontosUsados();
+    if (disponiveis < 0) {
+      e.preventDefault();
+      alert('Você excedeu os pontos de atributo!');
+    } else if (disponiveis > 0) {
+      if (!confirm(`Você ainda tem ${disponiveis} ponto(s) não utilizado(s). Deseja continuar assim?`)) {
+        e.preventDefault();
+      }
+    }
+  });
+
+  atualizarInterface();
+});
+</script>

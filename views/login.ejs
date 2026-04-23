@@ -1,0 +1,18 @@
+<%- include("partials/header") %>
+<nav>
+  <ul>
+       <img src="/img/Logo.webp" class="logo">
+    <li><a href="/">Home</a></li>
+    <li><a href="/personagens">Personagens</a></li>
+    <li><a href="/regras">Regras</a></li>
+  </ul>
+</nav>
+
+<h2>Login</h2>
+
+<form action="/login" method="POST">
+  <input style="max-width: 400px;" type="email" name="email" placeholder="Email" required> <br>
+  <input style="max-width: 400px;"  type="password" name="senha" placeholder="Senha" required><br>
+  <button class="btn-seta" type="submit">Entrar</button>
+  <a href="/cadastro" class="login">Cadastro</a>
+</form>

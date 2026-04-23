@@ -1,0 +1,26 @@
+<%- include("partials/header") %>
+<nav>
+  <ul>
+       <img src="/img/Logo.webp" class="logo">
+    <li><a href="/">Home</a></li>
+    <li><a href="/personagens">Personagens</a></li>
+    <li><a href="/regras">Regras</a></li>
+  </ul>
+</nav>
+<h2>Cadastro</h2>
+
+<form action="/cadastro" method="POST">
+  <input style="max-width: 400px;"  type="text" name="nome" placeholder="Nome" required><br>
+  <input style="max-width: 400px;"  type="email" name="email" placeholder="Email" required><br>
+  <input style="max-width: 400px;"  type="password" name="senha" placeholder="Senha" required><br>
+  <div class="form-bloco">
+  <h3>Tipo de conta</h3>
+  <select name="role" required>
+    <option value="jogador">Jogador</option>
+    <option value="mestre">Mestre</option>
+  </select>
+</div>
+  <button  type="submit" class="btn-seta" >Cadastrar</button>
+</form>
+
+<a href="/login" class="login">Já tem conta? Login</a>

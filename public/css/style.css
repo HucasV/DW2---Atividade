@@ -116,45 +116,88 @@ body {
   font-family: "Rationale", sans-serif;
   margin: 0;
 }
-
+/* ========================= */
+/* 🌟 NAVBAR */
+/* ========================= */
 nav {
   background: #111;
-  padding: 10px;
-  display: flex;
-
+  padding: 12px 30px;
+  border-bottom: 1px solid #00ff9c33;
 }
 
 nav ul {
-  justify-content: center;
-  align-items: center;
   display: flex;
-  gap: 50px;
+  align-items: center;
+  gap: 40px;
   list-style: none;
-  font-size: 20px;
-  margin-top: 30px;
+  margin: 0;
+  padding: 0;
 }
 
-nav a {
+/* Links principais */
+nav ul li a {
   color: #00ff9c;
   text-decoration: none;
+  font-size: 18px;
   transition: 0.3s;
+  font-family: "Rationale", sans-serif;
 }
 
-nav a:hover {
+nav ul li a:hover {
   color: #00ff9c;
-
-  text-shadow:
-    0 0 5px #00ff9c,
-    0 0 10px #00ff9c,
-    0 0 20px #00ff9c;
+  text-shadow: 0 0 5px #00ff9c, 0 0 10px #00ff9c;
 }
 
-.ref{
-  font-style: normal;
-  color: #ddfff2;
-  text-decoration: none;
-  transition: 0.3s;
+/* Item do perfil (à direita) */
+.perfil-nav {
+  margin-left: auto;
+}
 
+.perfil-nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  padding: 5px 10px;
+  border-radius: 30px;
+  transition: 0.2s;
+}
+
+.perfil-nav a:hover {
+  background: #003d2b33;
+  text-shadow: none;
+  box-shadow: 0 0 8px #00ff9c55;
+}
+
+/* Avatar circular */
+.avatar-nav {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #00ff9c;
+  background: #0a0a0a;
+}
+
+/* Nome do usuário (opcional, esconde em mobile) */
+.perfil-nav span {
+  font-size: 26px;
+  font-weight: normal;
+  color: #00ff9c;
+}
+
+/* Responsivo: em telas pequenas, esconde o nome e reduz avatar */
+@media (max-width: 700px) {
+  .perfil-nav span {
+    display: none;
+  }
+  .avatar-nav {
+    width: 32px;
+    height: 32px;
+  }
+  nav ul {
+    gap: 20px;
+  }
 }
 
 h1 {
@@ -409,4 +452,678 @@ ul li {
   width: 100px;
   height: 100px;
   margin-left: 0;
+}
+
+/* ========================= */
+/* 🎮 FICHA RPG */
+/* ========================= */
+
+.ficha {
+  width: 70%;
+  margin: 30px auto;
+  padding: 20px;
+
+  background: #0f0f0f;
+  border: 1px solid #00ff9c;
+
+  box-shadow:
+    0 0 10px #00ff9c22,
+    0 0 25px #00ff9c11;
+}
+
+/* TOPO */
+.topo {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+/* IMAGEM */
+.img-ficha {
+  width: 150px;
+  height: 200px;
+  object-fit: cover;
+
+  border-radius: 10px;
+  border: 2px solid #00ff9c;
+
+  box-shadow: 0 0 10px #00ff9c55;
+}
+
+/* INFO */
+.info p {
+  margin: 5px 0;
+}
+
+/* ========================= */
+/* ❤️ BARRA DE VIDA */
+/* ========================= */
+
+.vida-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.barra-bg {
+  width: 200px;
+  height: 25px;
+  background: #111;
+
+  border: 1px solid #00ff9c;
+  border-radius: 8px;
+
+  overflow: hidden;
+}
+
+.barra-vida {
+  height: 100%;
+  background: linear-gradient(90deg, #ff0033, #ff4444);
+
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  line-height: 25px;
+
+  transition: 0.3s;
+}
+
+/* ========================= */
+/* 🔼🔽 BOTÕES */
+/* ========================= */
+
+.btn-seta {
+  background: #111;
+  color: #00ff9c;
+
+  border: 1px solid #00ff9c;
+  padding: 5px 10px;
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-seta:hover {
+  background: #003d2b;
+
+  box-shadow:
+    0 0 5px #00ff9c,
+    0 0 10px #00ff9c;
+}
+
+/* ========================= */
+/* ⚙️ ATRIBUTOS */
+/* ========================= */
+
+.atributos {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.attr {
+  width: 70px;
+  padding: 10px;
+
+  background: #111;
+  border: 1px solid #00ff9c;
+
+  text-align: center;
+
+  border-radius: 8px;
+
+  transition: 0.2s;
+}
+
+.attr:hover {
+  background: #003d2b;
+
+  box-shadow:
+    0 0 5px #00ff9c,
+    0 0 10px #00ff9c;
+}
+
+.lista-personagens {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.card-personagem {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  padding: 10px;
+
+  border: 1px solid #00ff9c;
+  background: #0f0f0f;
+
+  transition: 0.2s;
+}
+
+.card-personagem:hover {
+  background: #003d2b;
+
+  box-shadow:
+    0 0 10px #00ff9c;
+}
+
+.img-personagem {
+  width: 90px;
+  height: 120px;
+  object-fit: cover;
+
+  border-radius: 10px;
+  border: 1px solid #00ff9c;
+}
+
+button {
+  font-family: "Rationale", sans-serif;
+}
+.barra-vida:active {
+  filter: brightness(1.5);
+}
+
+h2 {
+  text-shadow:
+    0 0 5px #00ff9c,
+    0 0 10px #00ff9c,
+    0 0 20px #00ff9c;
+}
+.lista-personagens {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.card-personagem {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  padding: 10px;
+
+  border: 1px solid #00ff9c;
+  background: #0f0f0f;
+
+  transition: 0.2s;
+}
+
+.card-personagem:hover {
+  background: #003d2b;
+
+  box-shadow:
+    0 0 10px #00ff9c;
+}
+
+.img-personagem {
+  width: 90px;
+  height: 120px;
+  object-fit: cover;
+
+  border-radius: 10px;
+  border: 1px solid #00ff9c;
+}
+
+.btn-delete {
+  margin-top: 20px;
+
+  background: #1a0000;
+  color: #ff4d4d;
+
+  border: 1px solid #ff0033;
+  padding: 10px 15px;
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* hover */
+.btn-delete:hover {
+  background: #330000;
+
+  box-shadow:
+    0 0 5px #ff0033,
+    0 0 10px #ff0033;
+
+  color: #ff1a1a;
+}
+
+/* clique */
+.btn-delete:active {
+  transform: scale(0.95);
+}
+
+/* ========================= */
+/* 🧾 FORMULÁRIO */
+/* ========================= */
+
+.form-container {
+  width: 60%;
+  margin: 30px auto;
+  padding: 20px;
+
+  background: #0f0f0f;
+  border: 1px solid #00ff9c;
+
+  box-shadow:
+    0 0 10px #00ff9c22,
+    0 0 25px #00ff9c11;
+}
+
+/* blocos */
+.form-bloco {
+  margin-bottom: 20px;
+  padding: 15px;
+
+  border-left: 3px solid #00ff9c;
+  background: #0a0a0a;
+}
+
+/* títulos */
+.form-bloco h3 {
+  margin-bottom: 10px;
+  color: #00ff9c;
+}
+
+/* inputs */
+input, textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+
+  background: #111;
+  color: #00ff9c;
+
+  border: 1px solid #00ff9c;
+
+  font-family: "Rationale", sans-serif;
+}
+
+/* foco */
+input:focus, textarea:focus {
+  outline: none;
+
+  box-shadow:
+    0 0 5px #00ff9c,
+    0 0 10px #00ff9c;
+}
+
+/* grid atributos */
+.grid-atributos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+/* botão */
+.btn-criar {
+  width: 100%;
+  margin-top: 10px;
+
+  font-size: 18px;
+}
+
+/* remove setinhas */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.file-upload {
+  display: inline-block;
+  padding: 10px 15px;
+
+  border: 1px solid #00ff9c;
+  background: #111;
+  color: #00ff9c;
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* hover */
+.file-upload:hover {
+  background: #003d2b;
+
+  box-shadow:
+    0 0 5px #00ff9c,
+    0 0 10px #00ff9c;
+}
+
+/* esconde o input real */
+.file-upload input {
+  display: none;
+}
+
+/* HERO */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 80px;
+  min-height: 80vh;
+}
+
+.hero-text {
+  width: 50%;
+}
+
+.hero-text h1 {
+  font-size: 48px;
+}
+
+.hero-text p {
+  font-size: 20px;
+  margin: 20px 0;
+}
+
+.hero-img img {
+  width: 400px;
+  border: 1px solid #00ff9c;
+  box-shadow: 0 0 20px #00ff9c55;
+}
+
+/* BOTÃO PRINCIPAL */
+.btn-main {
+  display: inline-block;
+  margin-top: 20px;
+
+  padding: 12px 20px;
+
+  border: 1px solid #00ff9c;
+  color: #00ff9c;
+  text-decoration: none;
+
+  transition: 0.2s;
+}
+
+.btn-main:hover {
+  background: #003d2b;
+
+  box-shadow:
+    0 0 5px #00ff9c,
+    0 0 15px #00ff9c;
+}
+
+/* SEÇÕES */
+.secao {
+  padding: 80px 20%;
+  text-align: center;
+
+  border-top: 1px solid #00ff9c22;
+}
+
+.secao h2 {
+  margin-bottom: 20px;
+  font-size: 28px;
+}
+
+.secao p {
+  font-size: 18px;
+  color: #cfcfcf;
+}
+
+/* alternar fundo */
+.secao.alt {
+  background: #0f0f0f;
+}
+
+.login{
+  text-decoration: none;
+  color: #7bc0ab;
+  font-size: 14px;
+  margin-left: 5px;
+}
+
+.login:hover {
+  background: #003d2b00;
+
+  text-shadow:
+    0 0 5px #00ff9c,
+    0 0 15px #00ff9c;
+}
+
+.form-habilidade {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.form-habilidade input,
+.form-habilidade select {
+  background: #0a0a0a;
+  border: 1px solid #00ff9c;
+  color: #00ff9c;
+  padding: 8px;
+}
+
+.form-habilidade button {
+  background: transparent;
+  border: 1px solid #00ff9c;
+  color: #00ff9c;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.form-habilidade button:hover {
+  background: #00ff9c;
+  color: #000;
+  box-shadow: 0 0 10px #00ff9c;
+}
+
+/* ========================= */
+/* ❤️ BARRA DE VIDA E SANIDADE */
+/* ========================= */
+
+/* Container geral para cada barra (vida ou sanidade) */
+.vida-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* Fundo escuro da barra */
+/* Barra-bg como referência para posicionamento absoluto */
+.barra-bg {
+  position: relative;
+  width: 200px;
+  height: 25px;
+  background: #111;
+  border: 1px solid #00ff9c;
+  border-radius: 8px;
+  overflow: hidden; /* esconde o excesso da barra colorida, mas o texto vai ficar por cima */
+}
+
+/* Barra colorida (preenchimento) */
+.barra-vida, .barra-sanidade {
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+.barra-vida {
+  background: linear-gradient(90deg, #ff0033, #ff4444);
+}
+.barra-sanidade {
+  background: linear-gradient(90deg, #9b59b6, #8e44ad);
+}
+
+/* Texto centralizado sobre toda a barra-bg */
+.barra-texto-centralizado {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  text-shadow: 0 0 2px black;
+  pointer-events: none; /* para que os cliques passem, mas vamos permitir nos spans */
+}
+
+.barra-texto-centralizado span {
+  pointer-events: auto; /* permite edição in-place */
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 0 4px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Estilos para os números editáveis  */
+.vida-atual-editable, .vida-max-editable,
+.sanidade-atual-editable, .sanidade-max-editable {
+  cursor: pointer;
+  background-color: rgba(0,0,0,0.2);
+  padding: 0 4px;
+  border-radius: 4px;
+  display: inline-block;
+  min-width: 40px;
+  text-align: center;
+}
+
+/* Input de edição (vida) */
+.editar-vida-input {
+  width: 60px;
+  height: 25px;                /* mesma altura da barra */
+  text-align: center;
+  font-size: 14px;
+  font-family: "Rationale", sans-serif;
+  font-weight: bold;
+background-color: #00000000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0 4px;             /* ajuste para centralizar texto */
+  margin: 0;
+  outline: none;
+  vertical-align: middle;
+  line-height: 1;             /* evita deslocamento vertical */
+  box-sizing: border-box;
+  text-shadow: 0 0 2px black; /* mesmo do texto da barra */
+}
+.editar-vida-input:focus {
+background-color: #00000000;
+  box-shadow: none;           /* sem sombra extra */
+}
+
+/* Input de edição (sanidade) */
+.editar-sanidade-input {
+  width: 60px;
+  height: 25px;
+  text-align: center;
+  font-size: 14px;
+  font-family: "Rationale", sans-serif;
+  font-weight: bold;
+background-color: #00000000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0 4px;
+  margin: 0;
+  outline: none;
+  vertical-align: middle;
+  line-height: 1;
+  box-sizing: border-box;
+  text-shadow: 0 0 2px black;
+}
+.editar-sanidade-input:focus {
+background-color: #00000000;
+  box-shadow: none;
+}
+
+/* Remove setinhas dos inputs number */
+.editar-vida-input::-webkit-inner-spin-button,
+.editar-vida-input::-webkit-outer-spin-button,
+.editar-sanidade-input::-webkit-inner-spin-button,
+.editar-sanidade-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.editar-vida-input, .editar-sanidade-input {
+  -moz-appearance: textfield;
+}
+
+/* Organização dos atributos em grid */
+.atributos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 15px;
+}
+.attr {
+  background: #111;
+  border: 1px solid #00ff9c;
+  border-radius: 8px;
+  text-align: center;
+  padding: 10px;
+}
+.attr-nome {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #00ff9c;
+}
+.attr-valor {
+  font-size: 1.5em;
+  margin: 5px 0;
+}
+.attr-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.xp-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+.xp-buttons form {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.xp-buttons input {
+  width: 100px;
+}
+/* Ajuste para telas pequenas */
+@media (max-width: 768px) {
+  .atributos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.tab-btn {
+  background: #111;
+  color: #00ff9c;
+  border: 1px solid #00ff9c;
+  padding: 5px 15px;
+  cursor: pointer;
+}
+.tab-btn.ativo {
+  background: #00ff9c;
+  color: #000;
 }

@@ -18,3 +18,16 @@ function toggleNPC(id) {
     el.style.display = "block";
   }
 }
+ const con = document.querySelector('[name="constituicao"]');
+  const forca = document.querySelector('[name="forca"]');
+  const preview = document.getElementById("previewVida");
+
+  function atualizar() {
+    const vida = 10 + Number(con.value || 0) + Number(forca.value || 0);
+    preview.innerText = "Vida inicial: " + vida;
+  }
+
+  con.addEventListener("input", atualizar);
+  forca.addEventListener("input", atualizar);
+
+  

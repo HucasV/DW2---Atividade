@@ -1,0 +1,64 @@
+<%- include("partials/header") %>
+<%- include("partials/navbar") %>
+
+<div class="form-container">
+  <h2>Meu Perfil</h2>
+
+  <div class="perfil-avatar">
+    <% if (usuario.avatar) { %>
+      <img src="/uploads/avatars/<%= usuario.avatar %>" class="avatar-img">
+    <% } else { %>
+      <img src="/default-avatar.png" class="avatar-img">
+    <% } %>
+  </div>
+
+  <form action="/perfil/update" method="POST" enctype="multipart/form-data">
+    <div class="form-bloco">
+      <h3>Nome de usuário</h3>
+      <input type="text" name="nome" value="<%= usuario.nome %>" required>
+    </div>
+
+    <div class="form-bloco">
+      <h3>Email</h3>
+      <input type="email" value="<%= usuario.email %>" disabled>
+    </div>
+
+    <div class="form-bloco">
+  <h3>Papel (Mestre / Jogador)</h3>
+  <select name="role" required>
+    <option value="jogador" <%= usuario.role === 'jogador' ? 'selected' : '' %>>Jogador</option>
+    <option value="mestre" <%= usuario.role === 'mestre' ? 'selected' : '' %>>Mestre</option>
+  </select>
+  <small>Alterar papel pode liberar funcionalidades específicas.</small>
+</div>
+    <div class="form-bloco">
+      <h3>Avatar</h3>
+      <label class="file-upload">
+        Escolher imagem
+        <input type="file" name="avatar" accept="image/*">
+      </label>
+    </div>
+
+    <button class="btn-seta" type="submit">Salvar alterações</button>
+  </form>
+
+  <hr>
+
+  <form action="/logout" method="GET">
+    <button class="btn-delete">Sair da conta</button>
+  </form>
+</div>
+
+<style>
+.perfil-avatar {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.avatar-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #00ff9c;
+}
+</style>
