@@ -4,15 +4,22 @@
 <div class="form-container">
   <h2>Meu Perfil</h2>
 
-  <div class="perfil-avatar">
-    <% if (usuario.avatar) { %>
-      <img src="/uploads/avatars/<%= usuario.avatar %>" class="avatar-img">
-    <% } else { %>
-      <img src="/default-avatar.png" class="avatar-img">
-    <% } %>
-  </div>
+  <form action="/perfil/update" method="POST" id="formPerfil">
+    <div class="form-bloco">
+      <h3>Avatar</h3>
+      <button type="button" id="selecionarImagemBtn" class="btn-seta">📁 Selecionar Imagem</button>
+      <input type="file" id="inputImagem" accept="image/*" style="display: none;">
+      <div id="cropperContainer" style="display: none; margin-top: 15px;">
+        <img id="imagemCropper" src="#" alt="Preview">
+      </div>
+      <div id="previewArea" style="margin-top: 15px; display: none;">
+        <p>Visualização final (quadrado):</p>
+        <canvas id="canvasPreview" style="max-width: 150px; border: 1px solid #00ff9c; border-radius: 8px;"></canvas>
+        <button type="button" id="aplicarCropBtn" class="btn-seta" style="margin-top: 10px;">✂️ Aplicar Recorte</button>
+      </div>
+      <input type="hidden" name="avatarCropped" id="avatarCropped">
+    </div>
 
-  <form action="/perfil/update" method="POST" enctype="multipart/form-data">
     <div class="form-bloco">
       <h3>Nome de usuário</h3>
       <input type="text" name="nome" value="<%= usuario.nome %>" required>
@@ -24,22 +31,15 @@
     </div>
 
     <div class="form-bloco">
-  <h3>Papel (Mestre / Jogador)</h3>
-  <select name="role" required>
-    <option value="jogador" <%= usuario.role === 'jogador' ? 'selected' : '' %>>Jogador</option>
-    <option value="mestre" <%= usuario.role === 'mestre' ? 'selected' : '' %>>Mestre</option>
-  </select>
-  <small>Alterar papel pode liberar funcionalidades específicas.</small>
-</div>
-    <div class="form-bloco">
-      <h3>Avatar</h3>
-      <label class="file-upload">
-        Escolher imagem
-        <input type="file" name="avatar" accept="image/*">
-      </label>
+      <h3>Papel (Mestre / Jogador)</h3>
+      <select name="role" required>
+        <option value="jogador" <%= usuario.role === 'jogador' ? 'selected' : '' %>>Jogador</option>
+        <option value="mestre" <%= usuario.role === 'mestre' ? 'selected' : '' %>>Mestre</option>
+      </select>
+      <small>Alterar papel pode liberar funcionalidades específicas.</small>
     </div>
 
-    <button class="btn-seta" type="submit">Salvar alterações</button>
+    <button type="submit" class="btn-seta">Salvar alterações</button>
   </form>
 
   <hr>
@@ -62,3 +62,72 @@
   border: 2px solid #00ff9c;
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  let cropper = null;
+  const inputImagem = document.getElementById('inputImagem');
+  const imagemCropper = document.getElementById('imagemCropper');
+  const cropperContainer = document.getElementById('cropperContainer');
+  const btnSelecionar = document.getElementById('selecionarImagemBtn');
+  const btnAplicar = document.getElementById('aplicarCropBtn');
+  const canvasPreview = document.getElementById('canvasPreview');
+  const previewArea = document.getElementById('previewArea');
+  const hiddenInput = document.getElementById('avatarCropped');
+  const form = document.getElementById('formPerfil');
+
+  btnSelecionar.addEventListener('click', () => inputImagem.click());
+
+  inputImagem.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imagemCropper.src = e.target.result;
+      cropperContainer.style.display = 'block';
+      if (cropper) cropper.destroy();
+      cropper = new Cropper(imagemCropper, {
+        aspectRatio: 1 / 1,
+        viewMode: 1,
+        autoCropArea: 0.8,
+        dragMode: 'move',
+        cropBoxResizable: true,
+        background: false,
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function aplicarRecorte() {
+    if (!cropper) {
+      alert('Selecione uma imagem primeiro.');
+      return false;
+    }
+    const croppedCanvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+    if (!croppedCanvas) {
+      alert('Falha ao gerar recorte.');
+      return false;
+    }
+    canvasPreview.width = 150;
+    canvasPreview.height = 150;
+    const ctx = canvasPreview.getContext('2d');
+    ctx.drawImage(croppedCanvas, 0, 0, 150, 150);
+    previewArea.style.display = 'block';
+    hiddenInput.value = croppedCanvas.toDataURL('image/jpeg', 0.9);
+    alert('Recorte aplicado!');
+    return true;
+  }
+
+  btnAplicar.addEventListener('click', aplicarRecorte);
+
+  // Auto‑aplicação ao enviar o formulário
+  form.addEventListener('submit', (event) => {
+    if (cropper && !hiddenInput.value) {
+      event.preventDefault();
+      if (aplicarRecorte()) {
+        setTimeout(() => form.submit(), 100);
+      }
+    }
+  });
+});
+</script>

@@ -1,0 +1,27 @@
+<%- include("partials/header") %>
+<%- include("partials/navbar") %>
+
+<div class="campanhas-container">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h2>Minhas Campanhas</h2>
+    <a href="/campanhas/nova" class="btn-seta">+ Nova Campanha</a>
+  </div>
+  <hr>
+  <% if (campanhas.length === 0) { %>
+    <p>Nenhuma campanha criada.</p>
+  <% } else { %>
+    <div class="campanhas-grid">
+      <% campanhas.forEach(c => { %>
+        <div class="card-campanha">
+          <h3><%= c.nome %></h3>
+          <p><%= c.descricao || 'Sem descrição' %></p>
+          <div class="campanha-acoes">
+            <a href="/campanhas/<%= c.id %>/gerenciar" class="btn-seta">Gerenciar</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<%- include("partials/footer") %>

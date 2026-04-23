@@ -1,0 +1,45 @@
+<%- include("partials/header") %>
+<%- include("partials/navbar") %>
+
+<div class="campanhas-container">
+  <div class="campanhas-header">
+    <h2>📖 Minhas Campanhas</h2>
+    <p class="subtitulo">Aqui estão as aventuras das quais você participa</p>
+  </div>
+
+  <% if (campanhas.length === 0) { %>
+    <div class="sem-campanhas">
+      <p>✨ Você não está em nenhuma campanha ainda.</p>
+      <p>Peça ao mestre para te adicionar a uma aventura!</p>
+    </div>
+  <% } else { %>
+    <div class="campanhas-grid">
+      <% campanhas.forEach(c => { %>
+        <div class="card-campanha-jogador">
+          <div class="card-header">
+            <h3><%= c.nome %></h3>
+            <span class="status <%= c.tem_personagem ? 'status-ok' : 'status-pendente' %>">
+              <%= c.tem_personagem ? '✓ Personagem atribuído' : '⚠️ Sem personagem' %>
+            </span>
+          </div>
+          <div class="card-body">
+            <p class="descricao"><%= c.descricao || 'Sem descrição fornecida.' %></p>
+            <form action="/campanhas/<%= c.id %>/escolher-personagem" method="POST" class="form-personagem">
+              <div class="select-wrapper">
+                <select name="id_personagem" required>
+                  <option value="">🔽 Selecione um personagem</option>
+                  <% personagensDoJogador.forEach(p => { %>
+                    <option value="<%= p.id %>"><%= p.nome %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <button class="btn-seta" type="submit">Atribuir</button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<%- include("partials/footer") %>

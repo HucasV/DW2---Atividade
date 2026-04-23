@@ -193,34 +193,37 @@ const avatarStorage = multer.diskStorage({
 });
 const uploadAvatar = multer({ storage: avatarStorage });
 
-app.post("/perfil/update", verificarLogin, uploadAvatar.single("avatar"), async (req, res) => {
+const sharp = require('sharp');
+
+app.post("/perfil/update", verificarLogin, async (req, res) => {
+  console.log('Corpo recebido:', req.body); // <-- debug
+
   try {
-    const { nome, role } = req.body;
-    const avatar = req.file ? req.file.filename : null;
+    const { nome, role, avatarCropped } = req.body;
 
-    // Valida se o role é válido
-    const roleValido = (role === 'jogador' || role === 'mestre');
-    if (!roleValido) {
-      return res.status(400).send("Papel inválido.");
+    if (!nome) {
+      return res.status(400).send("Nome é obrigatório.");
     }
 
-    // Atualiza nome e avatar se fornecidos
-    if (nome) {
-      await db.query("UPDATE jogador SET nome = ? WHERE id = ?", [nome, req.session.userId]);
-    }
-    if (avatar) {
-      await db.query("UPDATE jogador SET avatar = ? WHERE id = ?", [avatar, req.session.userId]);
-    }
-    // Atualiza o papel
-    await db.query("UPDATE jogador SET role = ? WHERE id = ?", [role, req.session.userId]);
+    // Atualiza nome e papel
+    await db.query("UPDATE jogador SET nome = ?, role = ? WHERE id = ?", [nome, role, req.session.userId]);
 
-    // Atualiza também a sessão (opcional)
+    // Processa o avatar, se existir
+    if (avatarCropped && avatarCropped.startsWith('data:image')) {
+      const base64Data = avatarCropped.replace(/^data:image\/\w+;base64,/, "");
+      const buffer = Buffer.from(base64Data, 'base64');
+      const nomeArquivo = `avatar_${Date.now()}.jpg`;
+      const caminho = path.join(__dirname, 'public/uploads/avatars/', nomeArquivo);
+      await sharp(buffer).jpeg({ quality: 85 }).toFile(caminho);
+      await db.query("UPDATE jogador SET avatar = ? WHERE id = ?", [nomeArquivo, req.session.userId]);
+    }
+    // Atualiza a sessão
     req.session.userRole = role;
 
     res.redirect("/perfil");
   } catch (err) {
     console.error(err);
-    res.status(500).send("Erro ao atualizar perfil");
+    res.status(500).send("Erro interno");
   }
 });
 
@@ -1366,6 +1369,156 @@ function calcularDano(nivel, tipo) {
 
   return `${qtd}d${dado}`;
 }
+
+// ======================
+// CAMPANHAS (MESTRE)
+// ======================
+
+// Lista campanhas do mestre (para o mestre)
+app.get("/campanhas/mestre", verificarLogin, async (req, res) => {
+  if (req.session.userRole !== 'mestre') return res.status(403).send("Acesso negado");
+  const [campanhas] = await db.query(
+    "SELECT * FROM campanhas WHERE id_mestre = ? ORDER BY created_at DESC",
+    [req.session.userId]
+  );
+  res.render("campanhasMestre", { campanhas });
+});
+
+// Criar nova campanha (formulário)
+app.get("/campanhas/nova", verificarLogin, (req, res) => {
+  if (req.session.userRole !== 'mestre') return res.status(403).send("Acesso negado");
+  res.render("novaCampanha");
+});
+
+app.post("/campanhas/nova", verificarLogin, async (req, res) => {
+  if (req.session.userRole !== 'mestre') return res.status(403).send("Acesso negado");
+  const { nome, descricao } = req.body;
+  await db.query(
+    "INSERT INTO campanhas (nome, descricao, id_mestre) VALUES (?, ?, ?)",
+    [nome, descricao, req.session.userId]
+  );
+  res.redirect("/campanhas/mestre");
+});
+
+// Gerenciar uma campanha específica (adicionar jogadores)
+app.get("/campanhas/:id/gerenciar", verificarLogin, async (req, res) => {
+  if (req.session.userRole !== 'mestre') return res.status(403).send("Acesso negado");
+  const id = req.params.id;
+  const [[campanha]] = await db.query(
+    "SELECT * FROM campanhas WHERE id = ? AND id_mestre = ?",
+    [id, req.session.userId]
+  );
+  if (!campanha) return res.send("Campanha não encontrada");
+  // Lista jogadores já adicionados
+  const [jogadoresNaCampanha] = await db.query(
+    "SELECT j.id, j.nome FROM campanha_jogadores cj JOIN jogador j ON cj.id_jogador = j.id WHERE cj.id_campanha = ?",
+    [id]
+  );
+  // Lista todos os jogadores (exceto o mestre)
+  const [todosJogadores] = await db.query(
+    "SELECT id, nome, email FROM jogador WHERE role = 'jogador' AND id NOT IN (SELECT id_jogador FROM campanha_jogadores WHERE id_campanha = ?)",
+    [id]
+  );
+  res.render("gerenciarCampanha", { campanha, jogadoresNaCampanha, todosJogadores });
+});
+
+// Adicionar jogador à campanha
+app.post("/campanhas/:id/adicionar-jogador", verificarLogin, async (req, res) => {
+  if (req.session.userRole !== 'mestre') return res.status(403).send("Acesso negado");
+  const id_campanha = req.params.id;
+  const { id_jogador } = req.body;
+  await db.query(
+    "INSERT INTO campanha_jogadores (id_campanha, id_jogador) VALUES (?, ?)",
+    [id_campanha, id_jogador]
+  );
+  res.redirect(`/campanhas/${id_campanha}/gerenciar`);
+});
+
+// Remover jogador da campanha
+app.post("/campanhas/:id/remover-jogador", verificarLogin, async (req, res) => {
+  if (req.session.userRole !== 'mestre') return res.status(403).send("Acesso negado");
+  const id_campanha = req.params.id;
+  const { id_jogador } = req.body;
+  await db.query(
+    "DELETE FROM campanha_jogadores WHERE id_campanha = ? AND id_jogador = ?",
+    [id_campanha, id_jogador]
+  );
+  // Também remover personagem associado (opcional, mas mantém consistência)
+  await db.query(
+    "DELETE FROM campanha_personagens WHERE id_campanha = ? AND id_jogador = ?",
+    [id_campanha, id_jogador]
+  );
+  res.redirect(`/campanhas/${id_campanha}/gerenciar`);
+});
+
+// Atribuir personagem a um jogador na campanha
+app.post("/campanhas/:id/atribuir-personagem", verificarLogin, async (req, res) => {
+  if (req.session.userRole !== 'mestre') return res.status(403).send("Acesso negado");
+  const id_campanha = req.params.id;
+  const { id_jogador, id_personagem } = req.body;
+  // Verificar se o personagem pertence ao jogador
+  const [[personagem]] = await db.query(
+    "SELECT id FROM personagens WHERE id = ? AND id_jogador = ?",
+    [id_personagem, id_jogador]
+  );
+  if (!personagem) return res.status(400).send("Personagem inválido ou não pertence ao jogador");
+  await db.query(
+    `INSERT INTO campanha_personagens (id_campanha, id_jogador, id_personagem)
+     VALUES (?, ?, ?) 
+     ON DUPLICATE KEY UPDATE id_personagem = VALUES(id_personagem)`,
+    [id_campanha, id_jogador, id_personagem]
+  );
+  res.redirect(`/campanhas/${id_campanha}/gerenciar`);
+});
+
+// ======================
+// CAMPANHAS (JOGADOR)
+// ======================
+
+// Listar campanhas que o jogador participa
+app.get("/campanhas/jogador", verificarLogin, async (req, res) => {
+  const [campanhas] = await db.query(
+    `SELECT c.*, 
+       (SELECT COUNT(*) FROM campanha_personagens cp WHERE cp.id_campanha = c.id AND cp.id_jogador = ?) as tem_personagem
+     FROM campanhas c
+     JOIN campanha_jogadores cj ON c.id = cj.id_campanha
+     WHERE cj.id_jogador = ?`,
+    [req.session.userId, req.session.userId]
+  );
+  // Para cada campanha, listar os personagens do jogador que podem ser atribuídos
+  const personagensDoJogador = await db.query(
+    "SELECT id, nome FROM personagens WHERE id_jogador = ?",
+    [req.session.userId]
+  );
+  res.render("campanhasJogador", { campanhas, personagensDoJogador: personagensDoJogador[0] });
+});
+
+// Atribuir um personagem a uma campanha (pelo jogador)
+app.post("/campanhas/:id/escolher-personagem", verificarLogin, async (req, res) => {
+  const id_campanha = req.params.id;
+  const { id_personagem } = req.body;
+  // Verificar se o jogador está na campanha
+  const [[rel]] = await db.query(
+    "SELECT id FROM campanha_jogadores WHERE id_campanha = ? AND id_jogador = ?",
+    [id_campanha, req.session.userId]
+  );
+  if (!rel) return res.status(403).send("Você não está nesta campanha");
+  // Verificar se o personagem pertence ao jogador
+  const [[personagem]] = await db.query(
+    "SELECT id FROM personagens WHERE id = ? AND id_jogador = ?",
+    [id_personagem, req.session.userId]
+  );
+  if (!personagem) return res.status(400).send("Personagem inválido");
+  await db.query(
+    `INSERT INTO campanha_personagens (id_campanha, id_jogador, id_personagem)
+     VALUES (?, ?, ?) 
+     ON DUPLICATE KEY UPDATE id_personagem = VALUES(id_personagem)`,
+    [id_campanha, req.session.userId, id_personagem]
+  );
+  res.redirect("/campanhas/jogador");
+});
+
+
 
 // ======================
 // SERVER

@@ -1,0 +1,64 @@
+<%- include("partials/header") %>
+<%- include("partials/navbar") %>
+
+<div class="campanhas-container">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h2>Gerenciar Campanha: <%= campanha.nome %></h2>
+    <a href="/campanhas/Mestre" class="btn-seta">⬅ Voltar</a>
+  </div>
+  <hr>
+
+  <!-- Formulário para adicionar jogador -->
+  <h3>Adicionar Jogador</h3>
+  <form action="/campanhas/<%= campanha.id %>/adicionar-jogador" method="POST" class="form-campanha">
+    <select name="id_jogador" required>
+      <option value="">Selecione um jogador</option>
+      <% todosJogadores.forEach(j => { %>
+        <option value="<%= j.id %>"><%= j.nome %> (<%= j.email %>)</option>
+      <% }) %>
+    </select>
+    <button class="btn-seta">Adicionar</button>
+  </form>
+
+  <hr>
+
+  <h3>Jogadores na Campanha</h3>
+  <% if (jogadoresNaCampanha.length === 0) { %>
+    <p>Nenhum jogador adicionado ainda.</p>
+  <% } else { %>
+    <div class="tabela-campanha-wrapper">
+      <table class="tabela-campanha">
+        <thead>
+          <tr><th>Jogador</th><th>Personagem</th><th>Ações</th></tr>
+        </thead>
+        <tbody>
+          <% jogadoresNaCampanha.forEach(j => { %>
+            <tr>
+              <td><%= j.nome %></td>
+              <td>
+                <form action="/campanhas/<%= campanha.id %>/atribuir-personagem" method="POST" style="display: flex; gap: 8px; align-items: center;">
+                  <input type="hidden" name="id_jogador" value="<%= j.id_jogador %>">
+                  <select name="id_personagem" class="select-personagem">
+                    <option value="">-- Escolher --</option>
+                    <% (j.personagens || []).forEach(p => { %>
+                      <option value="<%= p.id %>"><%= p.nome %></option>
+                    <% }) %>
+                  </select>
+                  <button class="btn-seta" type="submit">Atribuir</button>
+                </form>
+              </td>
+              <td>
+                <form action="/campanhas/<%= campanha.id %>/remover-jogador" method="POST" onsubmit="return confirm('Remover este jogador da campanha?')">
+                  <input type="hidden" name="id_jogador" value="<%= j.id_jogador %>">
+                  <button class="btn-delete" type="submit">Remover</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<%- include("partials/footer") %>

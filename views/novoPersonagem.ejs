@@ -10,28 +10,22 @@
     <!-- INFO BÁSICA -->
     <div class="form-bloco">
       <h3>Informações</h3>
-
       <input type="text" name="nome" placeholder="Nome do personagem" required>
-
-      <!-- Nível fixo em 1 (enviado como hidden) -->
       <input type="hidden" name="nivel" value="1">
-
       <textarea name="descricao" placeholder="Descrição"></textarea>
     </div>
 
     <!-- ATRIBUTOS COM PONTOS LIMITADOS -->
     <div class="form-bloco">
       <h3>Atributos</h3>
-    <p>Pontos de atributo disponíveis: <strong id="pontos-atributo-disponiveis"><%= pontos_disponiveis_atributo %></strong> (Total: <%= pontos_totais_atributo %>)</p>
+      <p>Pontos de atributo disponíveis: <strong id="pontos-atributo-disponiveis">21</strong> (Total: 21)</p>
       <p>Valor mínimo 1, máximo ilimitado (limitado pelos pontos).</p>
 
       <div class="atributos-grid-criacao">
         <!-- Força -->
         <div class="attr-criacao">
           <label>Força</label>
-          <div class="attr-value">
-            <span id="forca-val">1</span>
-          </div>
+          <div class="attr-value"><span id="forca-val">1</span></div>
           <div class="attr-buttons">
             <button type="button" class="btn-seta" data-atributo="forca" data-op="mais">+</button>
             <button type="button" class="btn-seta" data-atributo="forca" data-op="menos">-</button>
@@ -41,9 +35,7 @@
         <!-- Agilidade -->
         <div class="attr-criacao">
           <label>Agilidade</label>
-          <div class="attr-value">
-            <span id="agilidade-val">1</span>
-          </div>
+          <div class="attr-value"><span id="agilidade-val">1</span></div>
           <div class="attr-buttons">
             <button type="button" class="btn-seta" data-atributo="agilidade" data-op="mais">+</button>
             <button type="button" class="btn-seta" data-atributo="agilidade" data-op="menos">-</button>
@@ -53,9 +45,7 @@
         <!-- Constituição -->
         <div class="attr-criacao">
           <label>Constituição</label>
-          <div class="attr-value">
-            <span id="constituicao-val">1</span>
-          </div>
+          <div class="attr-value"><span id="constituicao-val">1</span></div>
           <div class="attr-buttons">
             <button type="button" class="btn-seta" data-atributo="constituicao" data-op="mais">+</button>
             <button type="button" class="btn-seta" data-atributo="constituicao" data-op="menos">-</button>
@@ -65,9 +55,7 @@
         <!-- Intelecto -->
         <div class="attr-criacao">
           <label>Intelecto</label>
-          <div class="attr-value">
-            <span id="intelecto-val">1</span>
-          </div>
+          <div class="attr-value"><span id="intelecto-val">1</span></div>
           <div class="attr-buttons">
             <button type="button" class="btn-seta" data-atributo="intelecto" data-op="mais">+</button>
             <button type="button" class="btn-seta" data-atributo="intelecto" data-op="menos">-</button>
@@ -77,9 +65,7 @@
         <!-- Atenção -->
         <div class="attr-criacao">
           <label>Atenção</label>
-          <div class="attr-value">
-            <span id="atencao-val">1</span>
-          </div>
+          <div class="attr-value"><span id="atencao-val">1</span></div>
           <div class="attr-buttons">
             <button type="button" class="btn-seta" data-atributo="atencao" data-op="mais">+</button>
             <button type="button" class="btn-seta" data-atributo="atencao" data-op="menos">-</button>
@@ -89,9 +75,7 @@
         <!-- Estabilidade -->
         <div class="attr-criacao">
           <label>Estabilidade</label>
-          <div class="attr-value">
-            <span id="estabilidade-val">1</span>
-          </div>
+          <div class="attr-value"><span id="estabilidade-val">1</span></div>
           <div class="attr-buttons">
             <button type="button" class="btn-seta" data-atributo="estabilidade" data-op="mais">+</button>
             <button type="button" class="btn-seta" data-atributo="estabilidade" data-op="menos">-</button>
@@ -106,8 +90,11 @@
       <h3>Aparência</h3>
       <label class="file-upload">
         Escolher Imagem
-        <input type="file" name="imagem">
+        <input type="file" name="imagem" id="imagem-input" accept="image/*">
       </label>
+      <div id="preview-container" style="margin-top: 10px; display:none;">
+        <img id="imagem-preview" src="#" alt="Preview" style="max-width: 150px; max-height: 150px; border: 1px solid #00ff9c; border-radius: 8px;">
+      </div>
     </div>
 
     <button type="submit" class="btn-seta" id="btn-criar">Criar Personagem</button>
@@ -148,8 +135,6 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const pontosTotais = 21; // nível 1
-  let pontosUsados = 0;
-
   const atributos = ['forca', 'agilidade', 'constituicao', 'intelecto', 'atencao', 'estabilidade'];
   const valores = {};
 
@@ -169,22 +154,16 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function atualizarInterface() {
-    pontosUsados = calcularPontosUsados();
-    const disponiveis = pontosTotais - pontosUsados;
-    document.getElementById('pontos-disponiveis').innerText = disponiveis;
+    const usados = calcularPontosUsados();
+    const disponiveis = pontosTotais - usados;
+    // CORREÇÃO: usar o ID correto
+    document.getElementById('pontos-atributo-disponiveis').innerText = disponiveis;
+
     for (let attr of atributos) {
       const maisBtn = document.querySelector(`button[data-atributo="${attr}"][data-op="mais"]`);
       const menosBtn = document.querySelector(`button[data-atributo="${attr}"][data-op="menos"]`);
-      if (disponiveis <= 0) {
-        maisBtn.disabled = true;
-      } else {
-        maisBtn.disabled = false;
-      }
-      if (valores[attr] <= 1) {
-        menosBtn.disabled = true;
-      } else {
-        menosBtn.disabled = false;
-      }
+      if (maisBtn) maisBtn.disabled = (disponiveis <= 0);
+      if (menosBtn) menosBtn.disabled = (valores[attr] <= 1);
     }
   }
 
@@ -219,6 +198,27 @@ document.addEventListener('DOMContentLoaded', function() {
     if (menos) menos.addEventListener('click', () => alterarAtributo(attr, 'menos'));
   }
 
+  // Preview da imagem
+  const inputImagem = document.getElementById('imagem-input');
+  const previewContainer = document.getElementById('preview-container');
+  const previewImg = document.getElementById('imagem-preview');
+
+  inputImagem.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        previewImg.src = event.target.result;
+        previewContainer.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      previewContainer.style.display = 'none';
+      previewImg.src = '#';
+    }
+  });
+
+  // Validação antes de enviar
   const form = document.getElementById('formCriar');
   form.addEventListener('submit', function(e) {
     const disponiveis = pontosTotais - calcularPontosUsados();

@@ -1127,3 +1127,368 @@ background-color: #00000000;
   background: #00ff9c;
   color: #000;
 }
+
+/* ========================= */
+/* 📁 CAMPANHAS - BASE */
+/* ========================= */
+
+/* Container principal */
+.campanhas-container {
+  width: 80%;
+  margin: 30px auto;
+  padding: 20px;
+  background: #0f0f0f;
+  border: 1px solid #00ff9c;
+  box-shadow: 0 0 10px #00ff9c22, 0 0 25px #00ff9c11;
+}
+
+/* Título da página */
+.campanhas-container h1 {
+  text-align: center;
+  text-shadow: 0 0 5px #00ff9c, 0 0 10px #00ff9c;
+  margin-bottom: 20px;
+}
+
+/* Grid de cards de campanhas (lista) */
+.campanhas-grid {
+  gap: 20px;
+  margin-top: 20px;
+  display: grid !important; /* força o grid */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+}
+
+/* Card de campanha */
+.card-campanha {
+  background: #111;
+  border: 1px solid #00ff9c;
+  border-radius: 12px;
+  padding: 15px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+.card-campanha:hover {
+  background: #1a1a1a;
+  box-shadow: 0 0 12px #00ff9c;
+}
+.card-campanha h3 {
+  color: #00ff9c;
+  margin-bottom: 8px;
+}
+.card-campanha p {
+  color: #cfcfcf;
+  font-size: 14px;
+  margin: 5px 0;
+}
+.card-campanha small {
+  color: #00ffaa;
+}
+
+/* Botões de ação nas campanhas */
+.card-campanha .campanha-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Formulários de campanha */
+.form-campanha {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.form-campanha input,
+.form-campanha textarea,
+.form-campanha select {
+  background: #111;
+  border: 1px solid #00ff9c;
+  color: #00ff9c;
+  padding: 10px;
+  font-family: "Rationale", sans-serif;
+}
+.form-campanha input:focus,
+.form-campanha textarea:focus,
+.form-campanha select:focus {
+  outline: none;
+  box-shadow: 0 0 5px #00ff9c;
+}
+.form-campanha button {
+  align-self: flex-start;
+}
+
+/* Lista de jogadores / personagens (box) */
+.lista-campanha {
+  margin-top: 20px;
+  border-top: 1px solid #00ff9c55;
+  padding-top: 15px;
+}
+.lista-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0a0a0a;
+  border-left: 3px solid #00ff9c;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+}
+.lista-item span {
+  color: #cfcfcf;
+}
+.lista-item button {
+  background: transparent;
+  border: none;
+  color: #ff4d4d;
+  cursor: pointer;
+  font-size: 16px;
+}
+.lista-item button:hover {
+  text-shadow: 0 0 5px #ff0033;
+}
+
+/* Tabela responsiva (opcional) */
+.tabela-campanha {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+.tabela-campanha th,
+.tabela-campanha td {
+  border: 1px solid #00ff9c55;
+  padding: 8px;
+  text-align: left;
+  color: #cfcfcf;
+}
+.tabela-campanha th {
+  background: #111;
+  color: #00ff9c;
+}
+
+/* Modal / popup de atribuição (pode ser usado no lugar do modal existente) */
+.modal-campanha {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #0f0f0f;
+  border: 2px solid #00ff9c;
+  padding: 20px;
+  z-index: 1000;
+  width: 350px;
+  border-radius: 12px;
+  box-shadow: 0 0 30px #00ff9c55;
+}
+.modal-campanha h3 {
+  margin-bottom: 15px;
+}
+.modal-campanha select {
+  width: 100%;
+  margin-bottom: 15px;
+}
+.modal-campanha button {
+  margin-right: 10px;
+}
+
+/* Overlay escuro para modal */
+.overlay-campanha {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  z-index: 999;
+}
+
+/* Botão específico para campanhas */
+.btn-campanha {
+  background: #111;
+  color: #00ff9c;
+  border: 1px solid #00ff9c;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-campanha:hover {
+  background: #003d2b;
+  box-shadow: 0 0 6px #00ff9c;
+}
+
+@media (max-width: 700px) {
+  .campanhas-container {
+    width: 95%;
+    padding: 15px;
+  }
+  .campanhas-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tabela-campanha-wrapper {
+  overflow-x: auto;
+}
+.tabela-campanha {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+.tabela-campanha th, 
+.tabela-campanha td {
+  border: 1px solid #00ff9c55;
+  padding: 10px;
+  text-align: left;
+  vertical-align: middle;
+}
+.tabela-campanha th {
+  background: #111;
+  color: #00ff9c;
+}
+.select-personagem {
+  background: #111;
+  color: #00ff9c;
+  border: 1px solid #00ff9c;
+  padding: 5px;
+  font-family: "Rationale", sans-serif;
+}
+
+/* ========================= */
+/* 🧙‍♂️ CAMPANHAS - JOGADOR */
+/* ========================= */
+
+.campanhas-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.campanhas-header h2 {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+.subtitulo {
+  color: #00ffaa;
+  opacity: 0.8;
+  font-size: 1rem;
+}
+
+.sem-campanhas {
+  text-align: center;
+  padding: 40px;
+  background: #0f0f0f;
+  border: 1px dashed #00ff9c;
+  border-radius: 12px;
+  color: #cfcfcf;
+}
+.sem-campanhas p:first-child {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+/* Grid de cards */
+.campanhas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+}
+
+/* Card individual */
+.card-campanha-jogador {
+  background: #0a0a0a;
+  border: 1px solid #00ff9c;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card-campanha-jogador:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 15px #00ff9c66;
+  border-color: #00ff9c;
+}
+
+.card-header {
+  background: #111;
+  padding: 15px 20px;
+  border-bottom: 1px solid #00ff9c55;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.card-header h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #00ff9c;
+}
+
+.status {
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #1a1a1a;
+}
+.status-ok {
+  color: #00ff9c;
+  border: 1px solid #00ff9c;
+}
+.status-pendente {
+  color: #ffaa44;
+  border: 1px solid #ffaa44;
+}
+
+.card-body {
+  padding: 20px;
+}
+.descricao {
+  color: #cfcfcf;
+  line-height: 1.4;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+
+/* Formulário dentro do card */
+.form-personagem {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.select-wrapper {
+  flex: 1;
+  min-width: 180px;
+}
+.select-wrapper select {
+  width: 100%;
+  background: #111;
+  border: 1px solid #00ff9c;
+  color: #00ff9c;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: "Rationale", sans-serif;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.select-wrapper select:hover {
+  background: #1a1a1a;
+  box-shadow: 0 0 5px #00ff9c;
+}
+.form-personagem .btn-seta {
+  margin-top: 0;
+  white-space: nowrap;
+}
+
+/* Responsivo */
+@media (max-width: 700px) {
+  .campanhas-grid {
+    grid-template-columns: 1fr;
+  }
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .form-personagem {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .form-personagem .btn-seta {
+    width: 100%;
+  }
+}

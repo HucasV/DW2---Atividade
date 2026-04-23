@@ -5,6 +5,13 @@
     <li><a href="/">Home</a></li>
     <li><a href="/personagens">Personagens</a></li>
     <li><a href="/regras">Regras</a></li>
+    <% if (user) { %>
+  <% if (user.role === 'mestre') { %>
+    <li><a href="/campanhas/mestre">Campanhas</a></li>
+  <% } else { %>
+    <li><a href="/campanhas/jogador">Campanhas</a></li>
+  <% } %>
+<% } %>
     <li class="perfil-nav">
       <a href="/perfil">
         <% if (user && user.avatar) { %>

@@ -1,0 +1,17 @@
+<%- include("partials/header") %>
+<%- include("partials/navbar") %>
+<div class="form-container">
+  <h2>Criar Nova Campanha</h2>
+  <form action="/campanhas/nova" method="POST">
+    <div class="form-bloco">
+      <label>Nome da Campanha</label>
+      <input type="text" name="nome" required>
+    </div>
+    <div class="form-bloco">
+      <label>Descrição</label>
+      <textarea name="descricao" rows="4"></textarea>
+    </div>
+    <button class="btn-seta">Criar</button>
+  </form>
+</div>
+<%- include("partials/footer") %>
