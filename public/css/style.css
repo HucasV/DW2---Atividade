@@ -1492,3 +1492,301 @@ background-color: #00000000;
     width: 100%;
   }
 }
+
+.img-personagem-mini {
+  width: 50px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #00ff9c;
+}
+.personagens-atribuidos {
+  margin-top: 15px;
+  border-top: 1px dashed #00ff9c55;
+  padding-top: 10px;
+}
+
+/* ========================= */
+/* 🎭 ATRIBUIR PERSONAGEM (JOGADOR) */
+/* ========================= */
+
+/* Container do formulário de atribuição */
+.form-personagem {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+/* Wrapper do select (para consistência) */
+.select-wrapper {
+  flex: 1;
+  min-width: 180px;
+}
+
+.select-wrapper select {
+  width: 100%;
+  background: #111;
+  border: 1px solid #00ff9c;
+  color: #00ff9c;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: "Rationale", sans-serif;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.select-wrapper select:hover,
+.select-wrapper select:focus {
+  background: #1a1a1a;
+  box-shadow: 0 0 5px #00ff9c;
+  outline: none;
+}
+
+/* Cards de personagens já atribuídos (mesmo estilo da lista de personagens) */
+.personagens-atribuidos {
+  margin-top: 20px;
+  border-top: 1px dashed #00ff9c55;
+  padding-top: 15px;
+}
+
+.personagens-atribuidos strong {
+  color: #00ff9c;
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.lista-personagens-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-personagem-mini {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #0a0a0a;
+  border: 1px solid #00ff9c;
+  border-radius: 10px;
+  padding: 8px 12px;
+  transition: 0.2s;
+}
+
+.card-personagem-mini:hover {
+  background: #111;
+  box-shadow: 0 0 6px #00ff9c;
+}
+
+.img-personagem-mini {
+  width: 50px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #00ff9c;
+}
+
+.card-personagem-mini .info {
+  flex: 1;
+}
+
+.card-personagem-mini .info h4 {
+  margin: 0 0 4px 0;
+  font-size: 1.1rem;
+  color: #00ff9c;
+}
+
+.card-personagem-mini .info p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #cfcfcf;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .form-personagem {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .select-wrapper {
+    min-width: 100%;
+  }
+  .card-personagem-mini {
+    flex-direction: column;
+    text-align: center;
+  }
+  .img-personagem-mini {
+    width: 70px;
+    height: 84px;
+  }
+}
+
+/* ========================= */
+/* 🛠️ GERENCIAR CAMPANHA (MESTRE) */
+/* ========================= */
+
+/* Formulário de adicionar jogador (por ID) */
+.form-campanha {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.form-campanha input,
+.form-campanha select {
+  background: #111;
+  border: 1px solid #00ff9c;
+  color: #00ff9c;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: "Rationale", sans-serif;
+}
+
+.form-campanha input:focus,
+.form-campanha select:focus {
+  outline: none;
+  box-shadow: 0 0 5px #00ff9c;
+}
+
+/* Lista de jogadores */
+.lista-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0a0a0a;
+  border-left: 3px solid #00ff9c;
+  padding: 12px 15px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.lista-item:hover {
+  background: #111;
+  box-shadow: 0 0 6px #00ff9c;
+}
+
+/* Sub‑seção de personagens (dentro de cada jogador) */
+.personagens-wrapper {
+  margin-left: 20px;
+  margin-bottom: 20px;
+  padding-left: 15px;
+  border-left: 1px dashed #00ff9c55;
+}
+
+.personagens-wrapper strong {
+  color: #00ff9c;
+  display: block;
+  margin-bottom: 10px;
+}
+
+/* Lista de personagens atribuídos (cards em grid) */
+.personagens-atribuidos-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.card-personagem-mini {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #0a0a0a;
+  border: 1px solid #00ff9c;
+  border-radius: 10px;
+  padding: 8px 12px;
+  transition: 0.2s;
+}
+
+.card-personagem-mini:hover {
+  background: #111;
+  box-shadow: 0 0 5px #00ff9c;
+}
+
+.card-personagem-mini .info {
+  flex: 1;
+}
+
+.card-personagem-mini .info h4 {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  color: #00ff9c;
+}
+
+.card-personagem-mini .info p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #cfcfcf;
+}
+
+/* Formulário inline para desatribuir */
+.form-inline {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+/* Formulário de adicionar personagem (select + botão) */
+.form-add-personagem {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.form-add-personagem select {
+  background: #111;
+  border: 1px solid #00ff9c;
+  color: #00ff9c;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-family: "Rationale", sans-serif;
+}
+
+/* Tabela responsiva (opcional) */
+.tabela-campanha {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.tabela-campanha th,
+.tabela-campanha td {
+  border: 1px solid #00ff9c55;
+  padding: 10px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.tabela-campanha th {
+  background: #111;
+  color: #00ff9c;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .lista-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .personagens-wrapper {
+    margin-left: 10px;
+  }
+  .card-personagem-mini {
+    flex-direction: column;
+    text-align: center;
+  }
+  .form-add-personagem {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .form-add-personagem select {
+    width: 100%;
+  }
+}

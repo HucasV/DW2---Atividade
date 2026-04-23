@@ -1,0 +1,70 @@
+<%- include("partials/header") %>
+<%- include("partials/navbar") %>
+
+<div class="campanhas-container">
+  <h2>Convites para Campanhas</h2>
+  <div id="listaSolicitacoes">
+    <p>Carregando...</p>
+  </div>
+</div>
+
+<script>
+  async function carregarSolicitacoes() {
+    try {
+      const res = await fetch('/solicitacoes');
+      const data = await res.json();
+      const container = document.getElementById('listaSolicitacoes');
+      if (!data.length) {
+        container.innerHTML = '<p>Nenhum convite pendente.</p>';
+        return;
+      }
+      let html = '<ul style="list-style:none; padding-left:0;">';
+      data.forEach(sol => {
+        html += `
+          <li class="lista-item" style="margin-bottom: 10px;">
+            <span><strong>${sol.campanha_nome}</strong> – Você foi convidado(a).</span>
+            <div>
+              <button class="btn-seta aceitar" data-id="${sol.id}">Aceitar</button>
+              <button class="btn-delete recusar" data-id="${sol.id}">Recusar</button>
+            </div>
+          </li>
+        `;
+      });
+      html += '</ul>';
+      container.innerHTML = html;
+
+      // Aceitar
+      document.querySelectorAll('.aceitar').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.getAttribute('data-id');
+          const resp = await fetch(`/solicitacoes/${id}/aceitar`, { method: 'POST' });
+          if (resp.ok) {
+            alert('Convite aceito! Você foi adicionado à campanha.');
+            carregarSolicitacoes(); // recarrega lista
+          } else {
+            alert('Erro ao aceitar convite.');
+          }
+        });
+      });
+      // Recusar
+      document.querySelectorAll('.recusar').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.getAttribute('data-id');
+          const resp = await fetch(`/solicitacoes/${id}/recusar`, { method: 'POST' });
+          if (resp.ok) {
+            alert('Convite recusado.');
+            carregarSolicitacoes();
+          } else {
+            alert('Erro ao recusar convite.');
+          }
+        });
+      });
+    } catch (err) {
+      console.error(err);
+      document.getElementById('listaSolicitacoes').innerHTML = '<p>Erro ao carregar convites.</p>';
+    }
+  }
+  carregarSolicitacoes();
+</script>
+
+<%- include("partials/footer") %>

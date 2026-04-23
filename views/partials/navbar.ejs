@@ -12,12 +12,15 @@
     <li><a href="/campanhas/jogador">Campanhas</a></li>
   <% } %>
 <% } %>
+<% if (user && user.role === 'jogador') { %>
+  <li><a href="/minhas-solicitacoes">Convites</a></li>
+<% } %>
     <li class="perfil-nav">
       <a href="/perfil">
         <% if (user && user.avatar) { %>
           <img src="/uploads/avatars/<%= user.avatar %>" class="avatar-nav">
         <% } else { %>
-          <img src="/default-avatar.png" class="avatar-nav">
+          <img src="../../public/img/Logo.webp" class="avatar-nav">
         <% } %>
         <span><%= user ? user.nome : 'Perfil' %></span>
       </a>

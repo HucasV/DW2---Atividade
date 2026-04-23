@@ -18,23 +18,51 @@
         <div class="card-campanha-jogador">
           <div class="card-header">
             <h3><%= c.nome %></h3>
-            <span class="status <%= c.tem_personagem ? 'status-ok' : 'status-pendente' %>">
-              <%= c.tem_personagem ? '✓ Personagem atribuído' : '⚠️ Sem personagem' %>
+            <span class="status <%= c.personagens && c.personagens.length ? 'status-ok' : 'status-pendente' %>">
+              <%= c.personagens && c.personagens.length ? '✓ Personagem atribuído' : '⚠️ Sem personagem' %>
             </span>
           </div>
           <div class="card-body">
             <p class="descricao"><%= c.descricao || 'Sem descrição fornecida.' %></p>
-            <form action="/campanhas/<%= c.id %>/escolher-personagem" method="POST" class="form-personagem">
-              <div class="select-wrapper">
-                <select name="id_personagem" required>
-                  <option value="">🔽 Selecione um personagem</option>
-                  <% personagensDoJogador.forEach(p => { %>
-                    <option value="<%= p.id %>"><%= p.nome %></option>
+            
+            <!-- Cards dos personagens atribuídos -->
+            <% if (c.personagens && c.personagens.length) { %>
+              <div class="personagens-atribuidos">
+                <strong>Personagens nesta campanha:</strong>
+                <div class="lista-personagens" style="margin-top: 10px;">
+                  <% c.personagens.forEach(p => { %>
+                    <div class="card-personagem" style="display: flex; align-items: center; gap: 10px; background: #0a0a0a; padding: 8px; border-radius: 8px; margin-bottom: 8px;">
+                      <% if (p.imagem) { %>
+                        <img src="/uploads/<%= p.imagem %>" class="img-personagem-mini" style="width: 50px; height: 60px; object-fit: cover; border-radius: 6px;">
+                      <% } else { %>
+                        <div style="width: 50px; height: 60px; background: #111; border: 1px solid #00ff9c; border-radius: 6px;"></div>
+                      <% } %>
+                      <div>
+                        <h4 style="margin: 0;"><%= p.nome %></h4>
+                        <p style="margin: 0; font-size: 12px;">Nível <%= p.nivel %></p>
+                      </div>
+                    </div>
                   <% }) %>
-                </select>
+                </div>
               </div>
-              <button class="btn-seta" type="submit">Atribuir</button>
-            </form>
+            <% } %>
+
+            <!-- Formulário para atribuir personagem (apenas se houver personagens disponíveis e nenhum atribuído) -->
+            <% if (personagensDoJogador && personagensDoJogador.length > 0 && (!c.personagens || c.personagens.length === 0)) { %>
+              <form action="/campanhas/<%= c.id %>/escolher-personagem" method="POST" class="form-personagem">
+                <div class="select-wrapper">
+                  <select name="id_personagem" required>
+                    <option value="">🔽 Selecione um personagem</option>
+                    <% personagensDoJogador.forEach(p => { %>
+                      <option value="<%= p.id %>"><%= p.nome %></option>
+                    <% }) %>
+                  </select>
+                </div>
+                <button class="btn-seta" type="submit">Atribuir</button>
+              </form>
+            <% } else if (c.personagens && c.personagens.length > 0) { %>
+              <p style="font-size: 12px; color: #00ffaa;">Personagem já atribuído. Para trocar, peça ao mestre.</p>
+            <% } %>
           </div>
         </div>
       <% }) %>

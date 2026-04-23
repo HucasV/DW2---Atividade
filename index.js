@@ -1403,25 +1403,62 @@ app.post("/campanhas/nova", verificarLogin, async (req, res) => {
 // Gerenciar uma campanha específica (adicionar jogadores)
 app.get("/campanhas/:id/gerenciar", verificarLogin, async (req, res) => {
   if (req.session.userRole !== 'mestre') return res.status(403).send("Acesso negado");
-  const id = req.params.id;
-  const [[campanha]] = await db.query(
-    "SELECT * FROM campanhas WHERE id = ? AND id_mestre = ?",
-    [id, req.session.userId]
-  );
-  if (!campanha) return res.send("Campanha não encontrada");
-  // Lista jogadores já adicionados
-  const [jogadoresNaCampanha] = await db.query(
-    "SELECT j.id, j.nome FROM campanha_jogadores cj JOIN jogador j ON cj.id_jogador = j.id WHERE cj.id_campanha = ?",
-    [id]
-  );
-  // Lista todos os jogadores (exceto o mestre)
-  const [todosJogadores] = await db.query(
-    "SELECT id, nome, email FROM jogador WHERE role = 'jogador' AND id NOT IN (SELECT id_jogador FROM campanha_jogadores WHERE id_campanha = ?)",
-    [id]
-  );
-  res.render("gerenciarCampanha", { campanha, jogadoresNaCampanha, todosJogadores });
-});
+  const campanhaId = req.params.id;
 
+  // Busca a campanha
+  const [[campanha]] = await db.query("SELECT * FROM campanhas WHERE id = ?", [campanhaId]);
+
+  // Busca todos os jogadores do sistema (para o select "Adicionar Jogador")
+  const [todosJogadores] = await db.query("SELECT id, nome, email FROM jogador WHERE role = 'jogador'");
+
+  // Busca jogadores que já estão na campanha
+  const [jogadores] = await db.query(`
+    SELECT j.id AS id_jogador, j.nome, j.email
+    FROM campanha_jogadores cj
+    JOIN jogador j ON cj.id_jogador = j.id
+    WHERE cj.id_campanha = ?
+  `, [campanhaId]);
+
+  // Para cada jogador, busca os personagens atribuídos e os disponíveis
+  const jogadoresNaCampanha = [];
+  for (let j of jogadores) {
+    // Personagens já atribuídos a essa campanha por esse jogador
+    const [atribuidos] = await db.query(`
+      SELECT p.id, p.nome, p.nivel
+      FROM campanha_personagens cp
+      JOIN personagens p ON cp.id_personagem = p.id
+      WHERE cp.id_campanha = ? AND cp.id_jogador = ?
+    `, [campanhaId, j.id_jogador]);
+
+    // Personagens do jogador que NÃO estão atribuídos a essa campanha
+    const idsAtribuidos = atribuidos.map(a => a.id);
+    let disponiveis = [];
+    if (idsAtribuidos.length === 0) {
+      const [todos] = await db.query("SELECT id, nome FROM personagens WHERE id_jogador = ?", [j.id_jogador]);
+      disponiveis = todos;
+    } else {
+      const [restantes] = await db.query(`
+        SELECT id, nome FROM personagens
+        WHERE id_jogador = ? AND id NOT IN (?)
+      `, [j.id_jogador, idsAtribuidos]);
+      disponiveis = restantes;
+    }
+
+    jogadoresNaCampanha.push({
+      id_jogador: j.id_jogador,
+      nome: j.nome,
+      email: j.email,
+      personagensAtribuidos: atribuidos,
+      personagensDisponiveis: disponiveis
+    });
+  }
+
+  res.render("gerenciarCampanha", {
+    campanha,
+    todosJogadores,
+    jogadoresNaCampanha
+  });
+});
 // Adicionar jogador à campanha
 app.post("/campanhas/:id/adicionar-jogador", verificarLogin, async (req, res) => {
   if (req.session.userRole !== 'mestre') return res.status(403).send("Acesso negado");
@@ -1429,23 +1466,6 @@ app.post("/campanhas/:id/adicionar-jogador", verificarLogin, async (req, res) =>
   const { id_jogador } = req.body;
   await db.query(
     "INSERT INTO campanha_jogadores (id_campanha, id_jogador) VALUES (?, ?)",
-    [id_campanha, id_jogador]
-  );
-  res.redirect(`/campanhas/${id_campanha}/gerenciar`);
-});
-
-// Remover jogador da campanha
-app.post("/campanhas/:id/remover-jogador", verificarLogin, async (req, res) => {
-  if (req.session.userRole !== 'mestre') return res.status(403).send("Acesso negado");
-  const id_campanha = req.params.id;
-  const { id_jogador } = req.body;
-  await db.query(
-    "DELETE FROM campanha_jogadores WHERE id_campanha = ? AND id_jogador = ?",
-    [id_campanha, id_jogador]
-  );
-  // Também remover personagem associado (opcional, mas mantém consistência)
-  await db.query(
-    "DELETE FROM campanha_personagens WHERE id_campanha = ? AND id_jogador = ?",
     [id_campanha, id_jogador]
   );
   res.redirect(`/campanhas/${id_campanha}/gerenciar`);
@@ -1477,20 +1497,40 @@ app.post("/campanhas/:id/atribuir-personagem", verificarLogin, async (req, res) 
 
 // Listar campanhas que o jogador participa
 app.get("/campanhas/jogador", verificarLogin, async (req, res) => {
-  const [campanhas] = await db.query(
-    `SELECT c.*, 
-       (SELECT COUNT(*) FROM campanha_personagens cp WHERE cp.id_campanha = c.id AND cp.id_jogador = ?) as tem_personagem
-     FROM campanhas c
-     JOIN campanha_jogadores cj ON c.id = cj.id_campanha
-     WHERE cj.id_jogador = ?`,
-    [req.session.userId, req.session.userId]
-  );
-  // Para cada campanha, listar os personagens do jogador que podem ser atribuídos
-  const personagensDoJogador = await db.query(
-    "SELECT id, nome FROM personagens WHERE id_jogador = ?",
-    [req.session.userId]
-  );
-  res.render("campanhasJogador", { campanhas, personagensDoJogador: personagensDoJogador[0] });
+  if (req.session.userRole !== 'jogador') {
+    return res.status(403).send("Acesso negado");
+  }
+  try {
+    // Busca as campanhas do jogador
+    const [campanhas] = await db.query(`
+      SELECT c.id, c.nome, c.descricao
+      FROM campanha_jogadores cj
+      JOIN campanhas c ON cj.id_campanha = c.id
+      WHERE cj.id_jogador = ?
+    `, [req.session.userId]);
+
+    // Para cada campanha, busca os personagens atribuídos
+    for (let camp of campanhas) {
+      const [personagens] = await db.query(`
+        SELECT p.id, p.nome, p.nivel, p.imagem
+        FROM campanha_personagens cp
+        JOIN personagens p ON cp.id_personagem = p.id
+        WHERE cp.id_campanha = ? AND cp.id_jogador = ?
+      `, [camp.id, req.session.userId]);
+      camp.personagens = personagens;
+    }
+
+    // Busca todos os personagens do jogador (para o dropdown)
+    const [personagensDoJogador] = await db.query(
+      "SELECT id, nome FROM personagens WHERE id_jogador = ?",
+      [req.session.userId]
+    );
+
+    res.render("campanhasJogador", { campanhas, personagensDoJogador });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erro interno");
+  }
 });
 
 // Atribuir um personagem a uma campanha (pelo jogador)
@@ -1518,8 +1558,254 @@ app.post("/campanhas/:id/escolher-personagem", verificarLogin, async (req, res) 
   res.redirect("/campanhas/jogador");
 });
 
+// ======================
+// REMOVER JOGADOR DA CAMPANHA
+// ======================
+app.post("/campanhas/:id/remover-jogador", verificarLogin, async (req, res) => {
+  if (req.session.userRole !== 'mestre') {
+    return res.status(403).send("Acesso negado");
+  }
+  const campanhaId = req.params.id;
+  const { id_jogador } = req.body;
 
+  // Validação
+  if (!id_jogador || isNaN(Number(id_jogador))) {
+    return res.status(400).send("ID do jogador inválido.");
+  }
 
+  try {
+    // Remove os personagens atribuídos a esse jogador na campanha
+    await db.query("DELETE FROM campanha_personagens WHERE id_campanha = ? AND id_jogador = ?", [campanhaId, id_jogador]);
+    // Remove o jogador da campanha
+    await db.query("DELETE FROM campanha_jogadores WHERE id_campanha = ? AND id_jogador = ?", [campanhaId, id_jogador]);
+    res.redirect(`/campanhas/${campanhaId}/gerenciar`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erro ao remover jogador.");
+  }
+});
+
+// ======================
+// ATRIBUIR PERSONAGEM (adicionar nova atribuição)
+// ======================
+app.post("/campanhas/:id/atribuir-personagem", verificarLogin, async (req, res) => {
+  if (req.session.userRole !== 'mestre') return res.status(403).send("Acesso negado");
+  const { id_campanha } = req.params;
+  const { id_jogador, id_personagem } = req.body;
+  try {
+    // Verifica se o personagem pertence ao jogador
+    const [[personagem]] = await db.query("SELECT id_jogador FROM personagens WHERE id = ?", [id_personagem]);
+    if (!personagem || personagem.id_jogador !== id_jogador) {
+      return res.status(400).send("Personagem não pertence ao jogador informado.");
+    }
+    // Insere a atribuição (se já existir, ignora)
+    await db.query(
+      "INSERT IGNORE INTO campanha_personagens (id_campanha, id_personagem, id_jogador) VALUES (?, ?, ?)",
+      [id_campanha, id_personagem, id_jogador]
+    );
+    res.redirect(`/campanhas/${id_campanha}/gerenciar`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erro ao atribuir personagem");
+  }
+});
+
+// ======================
+// DESATRIBUIR PERSONAGEM (remover uma atribuição específica)
+// ======================
+app.post("/campanhas/:id/remover-personagem", verificarLogin, async (req, res) => {
+  if (req.session.userRole !== 'mestre') return res.status(403).send("Acesso negado");
+  const campanhaId = req.params.id;
+  const { id_personagem } = req.body;
+  if (!id_personagem) return res.status(400).send("ID do personagem inválido.");
+  try {
+    await db.query("DELETE FROM campanha_personagens WHERE id_campanha = ? AND id_personagem = ?", [campanhaId, id_personagem]);
+    res.redirect(`/campanhas/${campanhaId}/gerenciar`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erro ao desatribuir personagem.");
+  }
+});
+app.get("/jogadores/buscar", verificarLogin, async (req, res) => {
+  if (req.session.userRole !== 'mestre') return res.status(403).json([]);
+  const { q } = req.query;
+  if (!q || q.length < 2) return res.json([]);
+  try {
+    const [jogadores] = await db.query(
+      "SELECT id, nome, email FROM jogador WHERE (nome LIKE ? OR email LIKE ?) AND role = 'jogador' LIMIT 10",
+      [`%${q}%`, `%${q}%`]
+    );
+    res.json(jogadores);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json([]);
+  }
+});
+// GET /solicitacoes – retorna lista de solicitações para o jogador logado
+app.get("/solicitacoes", verificarLogin, async (req, res) => {
+  try {
+    const [solicitacoes] = await db.query(`
+      SELECT s.id, c.nome as campanha_nome, c.id as campanha_id
+      FROM solicitacoes_campanha s
+      JOIN campanhas c ON s.id_campanha = c.id
+      WHERE s.id_jogador = ? AND s.status = 'pendente'
+    `, [req.session.userId]);
+    res.json(solicitacoes);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao buscar solicitações" });
+  }
+});
+app.get("/minhas-solicitacoes", verificarLogin, (req, res) => {
+  res.render("solicitacoes"); // apenas renderiza o template
+});
+app.post("/solicitacoes/:id/aceitar", verificarLogin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [solic] = await db.query(
+      "SELECT id_campanha, id_jogador FROM solicitacoes_campanha WHERE id = ? AND status = 'pendente'",
+      [id]
+    );
+    if (solic.length === 0) return res.status(404).json({ erro: "Solicitação não encontrada" });
+
+    // Adiciona jogador à campanha (se já não estiver)
+    await db.query(
+      "INSERT IGNORE INTO campanha_jogadores (id_campanha, id_jogador) VALUES (?, ?)",
+      [solic[0].id_campanha, solic[0].id_jogador]
+    );
+    // Atualiza status
+    await db.query("UPDATE solicitacoes_campanha SET status = 'aceita' WHERE id = ?", [id]);
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao aceitar solicitação" });
+  }
+});
+app.post("/solicitacoes/:id/recusar", verificarLogin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    await db.query("UPDATE solicitacoes_campanha SET status = 'recusada' WHERE id = ?", [id]);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao recusar solicitação" });
+  }
+});
+app.post("/campanhas/:id/solicitar", verificarLogin, async (req, res) => {
+  if (req.session.userRole !== 'mestre') return res.status(403).json({ erro: "Acesso negado" });
+  const campanhaId = req.params.id;
+  const { id_jogador } = req.body;
+  try {
+    // Verifica se já existe solicitação pendente
+    const [existe] = await db.query(
+      "SELECT id FROM solicitacoes_campanha WHERE id_campanha = ? AND id_jogador = ? AND status = 'pendente'",
+      [campanhaId, id_jogador]
+    );
+    if (existe.length > 0) {
+      return res.json({ mensagem: "Já existe uma solicitação pendente para este jogador." });
+    }
+    // Verifica se o jogador já está na campanha
+    const [membro] = await db.query(
+      "SELECT id_jogador FROM campanha_jogadores WHERE id_campanha = ? AND id_jogador = ?",
+      [campanhaId, id_jogador]
+    );
+    if (membro.length > 0) {
+      return res.json({ mensagem: "Este jogador já faz parte da campanha." });
+    }
+    await db.query(
+      "INSERT INTO solicitacoes_campanha (id_campanha, id_jogador) VALUES (?, ?)",
+      [campanhaId, id_jogador]
+    );
+    res.json({ mensagem: "Solicitação enviada com sucesso!" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro interno" });
+  }
+});
+
+// Rota para listar solicitações do jogador
+app.get("/solicitacoes", verificarLogin, async (req, res) => {
+  const [solicitacoes] = await db.query(`
+    SELECT s.id, c.nome as campanha_nome, c.id as id_campanha
+    FROM solicitacoes_campanha s
+    JOIN campanhas c ON s.id_campanha = c.id
+    WHERE s.id_jogador = ? AND s.status = 'pendente'
+  `, [req.session.userId]);
+  res.json(solicitacoes);
+});
+
+app.post("/solicitacoes/:id/aceitar", verificarLogin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [solicitacao] = await db.query("SELECT id_campanha, id_jogador FROM solicitacoes_campanha WHERE id = ? AND status = 'pendente'", [id]);
+    if (!solicitacao.length) return res.status(404).json({ erro: "Solicitação não encontrada" });
+    // Adiciona o jogador à campanha
+    await db.query("INSERT IGNORE INTO campanha_jogadores (id_campanha, id_jogador) VALUES (?, ?)", [solicitacao[0].id_campanha, solicitacao[0].id_jogador]);
+    // Atualiza status da solicitação
+    await db.query("UPDATE solicitacoes_campanha SET status = 'aceita' WHERE id = ?", [id]);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro" });
+  }
+});
+
+app.post("/campanhas/:id/escolher-personagem", verificarLogin, async (req, res) => {
+  const campanhaId = req.params.id;
+  const { id_personagem } = req.body;
+  const jogadorId = req.session.userId;
+
+  try {
+    // Verifica se o personagem pertence ao jogador
+    const [[personagem]] = await db.query("SELECT id_jogador FROM personagens WHERE id = ?", [id_personagem]);
+    if (!personagem || personagem.id_jogador !== jogadorId) {
+      return res.status(400).send("Personagem inválido.");
+    }
+    // Verifica se já não há um personagem atribuído nessa campanha para este jogador (opcional)
+    const [existe] = await db.query("SELECT id_personagem FROM campanha_personagens WHERE id_campanha = ? AND id_jogador = ?", [campanhaId, jogadorId]);
+    if (existe.length > 0) {
+      return res.status(400).send("Você já possui um personagem atribuído a esta campanha. Peça ao mestre para alterar.");
+    }
+    // Insere a atribuição
+    await db.query(
+      "INSERT INTO campanha_personagens (id_campanha, id_personagem, id_jogador) VALUES (?, ?, ?)",
+      [campanhaId, id_personagem, jogadorId]
+    );
+    res.redirect(`/campanhas/jogador`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erro ao atribuir personagem");
+  }
+});
+// ======================
+// DELETAR CAMPANHA (mestre)
+// ======================
+app.post("/campanhas/:id/delete", verificarLogin, async (req, res) => {
+  // Apenas mestres podem deletar campanhas
+  if (req.session.userRole !== 'mestre') {
+    return res.status(403).send("Acesso negado.");
+  }
+  const campanhaId = req.params.id;
+  try {
+    // Opcional: verificar se o mestre atual é o criador da campanha (se você tiver coluna id_mestre)
+    // Se não, apenas confirma que ele tem papel de mestre.
+
+    // Deletar solicitações relacionadas (se existir tabela)
+    await db.query("DELETE FROM solicitacoes_campanha WHERE id_campanha = ?", [campanhaId]);
+    // Deletar personagens atribuídos
+    await db.query("DELETE FROM campanha_personagens WHERE id_campanha = ?", [campanhaId]);
+    // Deletar jogadores da campanha
+    await db.query("DELETE FROM campanha_jogadores WHERE id_campanha = ?", [campanhaId]);
+    // Deletar a campanha
+    await db.query("DELETE FROM campanhas WHERE id = ?", [campanhaId]);
+
+    res.redirect("/campanhas/mestre");
+  } catch (err) {
+    console.error("Erro ao deletar campanha:", err);
+    res.status(500).send("Erro interno ao deletar campanha.");
+  }
+});
 // ======================
 // SERVER
 // ======================

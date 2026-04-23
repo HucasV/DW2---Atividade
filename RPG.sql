@@ -184,3 +184,13 @@ CREATE TABLE campanha_personagens (
   FOREIGN KEY (id_personagem) REFERENCES personagens(id) ON DELETE CASCADE,
   UNIQUE KEY (id_campanha, id_jogador)  -- um jogador só pode ter um personagem por campanha
 );
+
+CREATE TABLE solicitacoes_campanha (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  id_campanha INT,
+  id_jogador INT,
+  status ENUM('pendente', 'aceita', 'recusada') DEFAULT 'pendente',
+  data_solicitacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (id_campanha) REFERENCES campanhas(id) ON DELETE CASCADE,
+  FOREIGN KEY (id_jogador) REFERENCES jogador(id) ON DELETE CASCADE
+);

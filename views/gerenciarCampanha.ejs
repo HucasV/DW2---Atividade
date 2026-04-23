@@ -4,21 +4,18 @@
 <div class="campanhas-container">
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <h2>Gerenciar Campanha: <%= campanha.nome %></h2>
-    <a href="/campanhas/Mestre" class="btn-seta">⬅ Voltar</a>
+    <div>
+      <a href="/campanhas/mestre" class="btn-seta">⬅ Voltar</a>
+      <form action="/campanhas/<%= campanha.id %>/delete" method="POST" style="display: inline; margin-left: 10px;">
+        <button class="btn-delete" onclick="return confirm('Tem certeza que deseja deletar esta campanha? Todos os jogadores e atribuições serão removidos permanentemente.')">🗑️ Deletar Campanha</button>
+      </form>
+    </div>
   </div>
-  <hr>
 
-  <!-- Formulário para adicionar jogador -->
-  <h3>Adicionar Jogador</h3>
-  <form action="/campanhas/<%= campanha.id %>/adicionar-jogador" method="POST" class="form-campanha">
-    <select name="id_jogador" required>
-      <option value="">Selecione um jogador</option>
-      <% todosJogadores.forEach(j => { %>
-        <option value="<%= j.id %>"><%= j.nome %> (<%= j.email %>)</option>
-      <% }) %>
-    </select>
-    <button class="btn-seta">Adicionar</button>
-  </form>
+  <!-- Sistema de busca de jogadores -->
+  <h3>Buscar Jogadores</h3>
+  <input type="text" id="buscarJogador" placeholder="Nome ou email...">
+  <div id="resultadoBusca" style="margin-top: 10px;"></div>
 
   <hr>
 
@@ -26,39 +23,115 @@
   <% if (jogadoresNaCampanha.length === 0) { %>
     <p>Nenhum jogador adicionado ainda.</p>
   <% } else { %>
-    <div class="tabela-campanha-wrapper">
-      <table class="tabela-campanha">
-        <thead>
-          <tr><th>Jogador</th><th>Personagem</th><th>Ações</th></tr>
-        </thead>
-        <tbody>
-          <% jogadoresNaCampanha.forEach(j => { %>
-            <tr>
-              <td><%= j.nome %></td>
-              <td>
-                <form action="/campanhas/<%= campanha.id %>/atribuir-personagem" method="POST" style="display: flex; gap: 8px; align-items: center;">
-                  <input type="hidden" name="id_jogador" value="<%= j.id_jogador %>">
-                  <select name="id_personagem" class="select-personagem">
-                    <option value="">-- Escolher --</option>
-                    <% (j.personagens || []).forEach(p => { %>
-                      <option value="<%= p.id %>"><%= p.nome %></option>
-                    <% }) %>
-                  </select>
-                  <button class="btn-seta" type="submit">Atribuir</button>
+    <% jogadoresNaCampanha.forEach(j => { %>
+      <div class="lista-item">
+        <span><strong><%= j.nome %></strong> (ID: <%= j.id_jogador %>)</span>
+        <form action="/campanhas/<%= campanha.id %>/remover-jogador" method="POST" style="display:inline;">
+          <input type="hidden" name="id_jogador" value="<%= j.id_jogador %>">
+          <button class="btn-delete" onclick="return confirm('Remover jogador da campanha?')">Remover Jogador</button>
+        </form>
+      </div>
+
+      <div class="personagens-wrapper">
+        <strong>Personagens na campanha:</strong>
+        <div class="personagens-atribuidos-grid">
+          <% if (j.personagensAtribuidos && j.personagensAtribuidos.length) { %>
+            <% j.personagensAtribuidos.forEach(p => { %>
+              <div class="card-personagem-mini">
+                <% if (p.imagem) { %>
+                  <img src="/uploads/<%= p.imagem %>" class="img-personagem-mini" style="width: 40px; height: 50px; object-fit: cover; border-radius: 6px;">
+                <% } else { %>
+                  <div style="width: 40px; height: 50px; background: #111; border: 1px solid #00ff9c; border-radius: 6px;"></div>
+                <% } %>
+                <div class="info">
+                  <h4><%= p.nome %></h4>
+                  <p>Nível <%= p.nivel %></p>
+                </div>
+                <form action="/campanhas/<%= campanha.id %>/remover-personagem" method="POST" class="form-inline">
+                  <input type="hidden" name="id_personagem" value="<%= p.id %>">
+                  <button class="btn-seta" style="padding:2px 8px;">🗑️ Desatribuir</button>
                 </form>
-              </td>
-              <td>
-                <form action="/campanhas/<%= campanha.id %>/remover-jogador" method="POST" onsubmit="return confirm('Remover este jogador da campanha?')">
-                  <input type="hidden" name="id_jogador" value="<%= j.id_jogador %>">
-                  <button class="btn-delete" type="submit">Remover</button>
-                </form>
-              </td>
-            </tr>
-          <% }) %>
-        </tbody>
-      </table>
-    </div>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <p>Nenhum personagem atribuído.</p>
+          <% } %>
+        </div>
+
+        <!-- Formulário para adicionar personagem (se houver disponíveis) -->
+        <% if (j.personagensDisponiveis && j.personagensDisponiveis.length) { %>
+          <form action="/campanhas/<%= campanha.id %>/atribuir-personagem" method="POST" class="form-add-personagem">
+            <input type="hidden" name="id_jogador" value="<%= j.id_jogador %>">
+            <select name="id_personagem">
+              <option value="">-- Adicionar personagem --</option>
+              <% j.personagensDisponiveis.forEach(p => { %>
+                <option value="<%= p.id %>"><%= p.nome %></option>
+              <% }); %>
+            </select>
+            <button class="btn-seta">➕ Atribuir</button>
+          </form>
+        <% } %>
+      </div>
+    <% }); %>
   <% } %>
 </div>
+
+<script>
+  // Busca de jogadores via AJAX
+  const inputBusca = document.getElementById('buscarJogador');
+  const resultadoDiv = document.getElementById('resultadoBusca');
+
+  let timeoutId;
+  inputBusca.addEventListener('input', () => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      const termo = inputBusca.value.trim();
+      if (termo.length < 2) {
+        resultadoDiv.innerHTML = '';
+        return;
+      }
+      fetch(`/jogadores/buscar?q=${encodeURIComponent(termo)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.length === 0) {
+            resultadoDiv.innerHTML = '<p>Nenhum jogador encontrado.</p>';
+            return;
+          }
+          let html = '<ul style="list-style:none; padding-left:0;">';
+          data.forEach(jogador => {
+            html += `
+              <li style="margin-bottom: 8px;">
+                ${jogador.nome} (${jogador.email})
+                <button class="btn-seta solicitar-btn" data-id="${jogador.id}" data-nome="${jogador.nome}">Enviar Solicitação</button>
+              </li>`;
+          });
+          html += '</ul>';
+          resultadoDiv.innerHTML = html;
+
+          // Adicionar evento aos botões de solicitação
+          document.querySelectorAll('.solicitar-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const idJogador = btn.getAttribute('data-id');
+              const nomeJogador = btn.getAttribute('data-nome');
+              if (confirm(`Enviar solicitação para ${nomeJogador} participar da campanha?`)) {
+                fetch(`/campanhas/<%= campanha.id %>/solicitar`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ id_jogador: idJogador })
+                })
+                .then(res => res.json())
+                .then(data => {
+                  alert(data.mensagem || 'Solicitação enviada!');
+                  resultadoDiv.innerHTML = '';
+                  inputBusca.value = '';
+                })
+                .catch(err => alert('Erro ao enviar solicitação.'));
+              }
+            });
+          });
+        });
+    }, 300);
+  });
+</script>
 
 <%- include("partials/footer") %>

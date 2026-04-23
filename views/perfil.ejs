@@ -7,7 +7,7 @@
   <form action="/perfil/update" method="POST" id="formPerfil">
     <div class="form-bloco">
       <h3>Avatar</h3>
-      <button type="button" id="selecionarImagemBtn" class="btn-seta">📁 Selecionar Imagem</button>
+      <button type="button" id="selecionarImagemBtn" class="btn-seta"> Selecionar Imagem</button>
       <input type="file" id="inputImagem" accept="image/*" style="display: none;">
       <div id="cropperContainer" style="display: none; margin-top: 15px;">
         <img id="imagemCropper" src="#" alt="Preview">
@@ -15,7 +15,7 @@
       <div id="previewArea" style="margin-top: 15px; display: none;">
         <p>Visualização final (quadrado):</p>
         <canvas id="canvasPreview" style="max-width: 150px; border: 1px solid #00ff9c; border-radius: 8px;"></canvas>
-        <button type="button" id="aplicarCropBtn" class="btn-seta" style="margin-top: 10px;">✂️ Aplicar Recorte</button>
+        <button type="button" id="aplicarCropBtn" class="btn-seta" style="margin-top: 10px;"> Aplicar Recorte</button>
       </div>
       <input type="hidden" name="avatarCropped" id="avatarCropped">
     </div>
