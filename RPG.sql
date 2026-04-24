@@ -194,3 +194,5 @@ CREATE TABLE solicitacoes_campanha (
   FOREIGN KEY (id_campanha) REFERENCES campanhas(id) ON DELETE CASCADE,
   FOREIGN KEY (id_jogador) REFERENCES jogador(id) ON DELETE CASCADE
 );
+
+ALTER TABLE habilidades_biblioteca ADD COLUMN is_upgradeable_original TINYINT(1) DEFAULT 1;

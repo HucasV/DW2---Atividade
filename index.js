@@ -1083,7 +1083,7 @@ app.post("/habilidades/copiarJson", verificarLogin, async (req, res) => {
     );
     if (!habilidadeBase) return res.status(404).json({ erro: "Habilidade não encontrada na biblioteca" });
 
-    if (!habilidadeBase.is_geral && habilidadeBase.id_jogador !== req.session.userId) {
+    if (habilidadeBase.is_geral && habilidadeBase.id_jogador !== null && habilidadeBase.id_jogador !== req.session.userId) {
       return res.status(403).json({ erro: "Acesso negado" });
     }
 
@@ -1104,7 +1104,10 @@ app.post("/habilidades/copiarJson", verificarLogin, async (req, res) => {
       return res.status(400).json({ erro: "Sem pontos disponíveis para adicionar habilidade" });
     }
 
-    const danoFixo = habilidadeBase.dano_base || calcularDano(1, habilidadeBase.tipo);
+    // Decisão: se é geral (divindade) → fixa; se é pessoal → upável
+    const isUpgradeable = habilidadeBase.is_geral ? 0 : (habilidadeBase.is_upgradeable_original ? 1 : 0);
+    const danoFixo = habilidadeBase.is_geral ? (habilidadeBase.dano_base || calcularDano(1, habilidadeBase.tipo)) : null;
+
     const [result] = await db.query(
       `INSERT INTO habilidades 
       (nome, tipo, modo, id_personagem, descricao, tipo_acao, custo_vida, custo_sanidade, efeito, is_upgradeable, dano_fixo) 
@@ -1116,12 +1119,16 @@ app.post("/habilidades/copiarJson", verificarLogin, async (req, res) => {
         id_personagem,
         habilidadeBase.descricao || null,
         habilidadeBase.tipo_acao || 'ativa',
-        0, 0,
+        0, // custo vida – você pode ajustar depois
+        0, // custo sanidade
         habilidadeBase.efeito || null,
-        0,
+        isUpgradeable,
         danoFixo
       ]
     );
+
+    // Valor exibido (se não for fixo, será calculado dinamicamente)
+    const valorExibido = danoFixo || calcularDano(1, habilidadeBase.tipo);
 
     const novaHabilidade = {
       id: result.insertId,
@@ -1129,13 +1136,13 @@ app.post("/habilidades/copiarJson", verificarLogin, async (req, res) => {
       tipo: habilidadeBase.tipo,
       modo: habilidadeBase.modo,
       nivel: 1,
-      valor: danoFixo,
+      valor: valorExibido,
       descricao: habilidadeBase.descricao,
       tipo_acao: habilidadeBase.tipo_acao || 'ativa',
       custo_vida: 0,
       custo_sanidade: 0,
       efeito: habilidadeBase.efeito,
-      is_upgradeable: 0
+      is_upgradeable: isUpgradeable
     };
     const novosUsados = usados + 1;
     const novosPontos = pontos_totais - novosUsados;
@@ -1195,25 +1202,27 @@ app.post("/habilidades/salvarNaBiblioteca", verificarLogin, async (req, res) => 
     const danoBase = habilidade.dano_fixo || habilidade.valor || calcularDano(habilidade.nivel, habilidade.tipo);
 
     // Inserir na biblioteca
-    await db.query(
-      `INSERT INTO habilidades_biblioteca 
-      (nome, tipo, modo, descricao, tipo_acao, efeito, id_jogador, is_geral, nivel_base, custo_vida_base, custo_sanidade_base, dano_base) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        habilidade.nome,
-        habilidade.tipo,
-        habilidade.modo,
-        habilidade.descricao || null,
-        habilidade.tipo_acao || 'ativa',
-        habilidade.efeito || null,
-        req.session.userId,
-        0, // is_geral = false (pessoal)
-        1, // nivel_base padrão
-        habilidade.custo_vida || 0,
-        habilidade.custo_sanidade || 0,
-        danoBase
-      ]
-    );
+   await db.query(
+  `INSERT INTO habilidades_biblioteca 
+  (nome, tipo, modo, descricao, tipo_acao, efeito, id_jogador, is_geral, nivel_base, 
+   custo_vida_base, custo_sanidade_base, dano_base, is_upgradeable_original) 
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  [
+    habilidade.nome,
+    habilidade.tipo,
+    habilidade.modo,
+    habilidade.descricao || null,
+    habilidade.tipo_acao || 'ativa',
+    habilidade.efeito || null,
+    req.session.userId,
+    0,
+    1,
+    habilidade.custo_vida || 0,
+    habilidade.custo_sanidade || 0,
+    habilidade.valor,  // dano atual (pode ser texto como "5d10")
+    habilidade.is_upgradeable  // ← guarda se era upável
+  ]
+);
     res.json({ ok: true, mensagem: "Habilidade salva na biblioteca!" });
   } catch (err) {
     console.error(err);
