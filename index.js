@@ -548,107 +548,71 @@ app.post("/personagens", verificarLogin, upload.single("imagem"), async (req, re
 // ======================
 // VIDA
 // ======================
-app.post("/personagens/:id/dano", verificarLogin, async (req, res) => {
+app.post("/personagens/:id/danoJson", verificarLogin, async (req, res) => {
   const { id } = req.params;
-  const dano = Number(req.body.dano || 0);
-
+  const dano = Number(req.body.dano);
   const [[p]] = await db.query(
     "SELECT vida_atual, forca, constituicao, nivel FROM personagens WHERE id = ? AND id_jogador = ?",
     [id, req.session.userId]
   );
-
-  if (!p) return res.send("Personagem não encontrado");
-
+  if (!p) return res.status(404).json({ erro: "Personagem não encontrado" });
   const vida_max = 10 + Number(p.constituicao) + Number(p.forca) + (Number(p.nivel) * 6);
   let novaVida = Number(p.vida_atual) - dano;
-
   if (novaVida < 0) novaVida = 0;
-  if (novaVida > vida_max) novaVida = vida_max; // seguro
-
-  await db.query(
-    "UPDATE personagens SET vida_atual = ? WHERE id = ?",
-    [novaVida, id]
-  );
-
-  res.redirect("/personagens/" + id);
+  if (novaVida > vida_max) novaVida = vida_max;
+  await db.query("UPDATE personagens SET vida_atual = ? WHERE id = ?", [novaVida, id]);
+  res.json({ ok: true });
 });
 
-app.post("/personagens/:id/cura", verificarLogin, async (req, res) => {
+app.post("/personagens/:id/curaJson", verificarLogin, async (req, res) => {
   const { id } = req.params;
-  const cura = Number(req.body.cura || 0);
-
+  const cura = Number(req.body.cura);
   const [[p]] = await db.query(
     "SELECT vida_atual, forca, constituicao, nivel FROM personagens WHERE id = ? AND id_jogador = ?",
     [id, req.session.userId]
   );
-
-  if (!p) return res.send("Personagem não encontrado");
-
+  if (!p) return res.status(404).json({ erro: "Personagem não encontrado" });
   const vida_max = 10 + Number(p.constituicao) + Number(p.forca) + (Number(p.nivel) * 6);
   let novaVida = Number(p.vida_atual) + cura;
-
   if (novaVida > vida_max) novaVida = vida_max;
-
-  await db.query(
-    "UPDATE personagens SET vida_atual = ? WHERE id = ?",
-    [novaVida, id]
-  );
-
-  res.redirect("/personagens/" + id);
+  await db.query("UPDATE personagens SET vida_atual = ? WHERE id = ?", [novaVida, id]);
+  res.json({ ok: true });
 });
-// Dano de sanidade
-// Dano de sanidade (-1)
-app.post("/personagens/:id/danoSanidade", verificarLogin, async (req, res) => {
-  const { id } = req.params;
-  const dano = Number(req.body.dano || 0);
 
+// Dano de sanidade (JSON)
+app.post("/personagens/:id/danoSanidadeJson", verificarLogin, async (req, res) => {
+  const { id } = req.params;
+  const dano = Number(req.body.dano) || 0;
   const [[p]] = await db.query(
     "SELECT sanidade_atual, estabilidade, nivel FROM personagens WHERE id = ? AND id_jogador = ?",
     [id, req.session.userId]
   );
-
-  if (!p) return res.send("Personagem não encontrado");
-
+  if (!p) return res.status(404).json({ erro: "Personagem não encontrado" });
   const sanidade_max = 5 + Number(p.estabilidade) + (Number(p.nivel) * 3);
   let novaSanidade = Number(p.sanidade_atual) - dano;
-
   if (novaSanidade < 0) novaSanidade = 0;
   if (novaSanidade > sanidade_max) novaSanidade = sanidade_max;
-
-  await db.query(
-    "UPDATE personagens SET sanidade_atual = ? WHERE id = ?",
-    [novaSanidade, id]
-  );
-
-  res.redirect("/personagens/" + id);
+  await db.query("UPDATE personagens SET sanidade_atual = ? WHERE id = ?", [novaSanidade, id]);
+  res.json({ ok: true });
 });
 
-// Cura de sanidade (+1)
-app.post("/personagens/:id/curaSanidade", verificarLogin, async (req, res) => {
+// Cura de sanidade (JSON)
+app.post("/personagens/:id/curaSanidadeJson", verificarLogin, async (req, res) => {
   const { id } = req.params;
-  const cura = Number(req.body.cura || 0);
-
+  const cura = Number(req.body.cura) || 0; // use o mesmo campo 'cura' (vem do botão)
   const [[p]] = await db.query(
     "SELECT sanidade_atual, estabilidade, nivel FROM personagens WHERE id = ? AND id_jogador = ?",
     [id, req.session.userId]
   );
-
-  if (!p) return res.send("Personagem não encontrado");
-
+  if (!p) return res.status(404).json({ erro: "Personagem não encontrado" });
   const sanidade_max = 5 + Number(p.estabilidade) + (Number(p.nivel) * 3);
   let novaSanidade = Number(p.sanidade_atual) + cura;
-
   if (novaSanidade > sanidade_max) novaSanidade = sanidade_max;
-
-  await db.query(
-    "UPDATE personagens SET sanidade_atual = ? WHERE id = ?",
-    [novaSanidade, id]
-  );
-
-  res.redirect("/personagens/" + id);
+  await db.query("UPDATE personagens SET sanidade_atual = ? WHERE id = ?", [novaSanidade, id]);
+  res.json({ ok: true });
 });
 
-// Edição manual de sanidade (opcional)
+
 // Rota para edição via JSON (AJAX) – SANIDADE
 app.post("/personagens/:id/editarSanidadeJson", verificarLogin, async (req, res) => {
    console.log("Body recebido (sanidade):", req.body);
@@ -1771,7 +1735,7 @@ app.post("/campanhas/:id/escolher-personagem", verificarLogin, async (req, res) 
     if (!personagem || personagem.id_jogador !== jogadorId) {
       return res.status(400).send("Personagem inválido.");
     }
-    // Verifica se já não há um personagem atribuído nessa campanha para este jogador (opcional)
+    // Verifica se já não há um personagem atribuído nessa campanha para este jogador
     const [existe] = await db.query("SELECT id_personagem FROM campanha_personagens WHERE id_campanha = ? AND id_jogador = ?", [campanhaId, jogadorId]);
     if (existe.length > 0) {
       return res.status(400).send("Você já possui um personagem atribuído a esta campanha. Peça ao mestre para alterar.");
@@ -1797,8 +1761,6 @@ app.post("/campanhas/:id/delete", verificarLogin, async (req, res) => {
   }
   const campanhaId = req.params.id;
   try {
-    // Opcional: verificar se o mestre atual é o criador da campanha (se você tiver coluna id_mestre)
-    // Se não, apenas confirma que ele tem papel de mestre.
 
     // Deletar solicitações relacionadas (se existir tabela)
     await db.query("DELETE FROM solicitacoes_campanha WHERE id_campanha = ?", [campanhaId]);

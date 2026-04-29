@@ -27,33 +27,26 @@
 
       <!-- VIDA -->
       <div class="vida-container">
-        <form action="/personagens/<%= personagem.id %>/dano" method="POST">
-          <input type="hidden" name="dano" value="1">
-          <button class="btn-seta btn-dano">⬅</button>
-        </form>
-        <div class="barra-bg">
-          <div class="barra-vida" style="width: <%= (personagem.vida_atual / vida_max) * 100 %>%"></div>
-          <div class="barra-texto-centralizado">
-            <span class="vida-atual-editable" data-id="<%= personagem.id %>" data-max="<%= vida_max %>">
-              <%= personagem.vida_atual %>
-            </span> / 
-            <span class="vida-max-editable" data-id="<%= personagem.id %>">
-              <%= vida_max %>
-            </span>
-          </div>
-        </div>
-        <form action="/personagens/<%= personagem.id %>/cura" method="POST">
-          <input type="hidden" name="cura" value="1">
-          <button class="btn-seta btn-cura">➡</button>
-        </form>
-      </div>
+  <button class="btn-seta btn-dano" data-acao="dano" data-valor="1">⬅</button>
 
-      <!-- SANIDADE -->
+  <div class="barra-bg">
+    <div class="barra-vida" style="width: <%= (personagem.vida_atual / vida_max) * 100 %>%"></div>
+    <div class="barra-texto-centralizado">
+      <span class="vida-atual-editable" data-id="<%= personagem.id %>" data-max="<%= vida_max %>">
+        <%= personagem.vida_atual %>
+      </span> / 
+      <span class="vida-max-editable" data-id="<%= personagem.id %>">
+        <%= vida_max %>
+      </span>
+    </div>
+  </div>
+
+  <button class="btn-seta btn-cura" data-acao="cura" data-valor="1">➡</button>
+</div>
+
+            <!-- SANIDADE -->
       <div class="vida-container">
-        <form action="/personagens/<%= personagem.id %>/danoSanidade" method="POST">
-          <input type="hidden" name="dano" value="1">
-          <button class="btn-seta btn-dano" type="submit">⬅</button>
-        </form>
+        <button class="btn-seta btn-dano" data-acao="danoSanidade" data-valor="1">⬅</button>
         <div class="barra-bg">
           <div class="barra-sanidade" style="width: <%= (personagem.sanidade_atual / sanidade_max) * 100 %>%"></div>
           <div class="barra-texto-centralizado">
@@ -65,13 +58,11 @@
             </span>
           </div>
         </div>
-        <form action="/personagens/<%= personagem.id %>/curaSanidade" method="POST">
-          <input type="hidden" name="cura" value="1">
-          <button class="btn-seta btn-cura" type="submit">➡</button>
-        </form>
+        <button class="btn-seta btn-cura" data-acao="curaSanidade" data-valor="1">➡</button>
       </div>
-    </div>
-  </div>
+
+    </div> 
+  </div> 
 
   <hr>
 
@@ -356,6 +347,51 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.vida-max-editable').forEach(span => criarEditor(span, 'max', 'vida'));
   document.querySelectorAll('.sanidade-atual-editable').forEach(span => criarEditor(span, 'atual', 'sanidade'));
   document.querySelectorAll('.sanidade-max-editable').forEach(span => criarEditor(span, 'max', 'sanidade'));
+
+// ======================
+// DANO / CURA VIA AJAX (vida e sanidade)
+// ======================
+document.querySelectorAll('.btn-dano, .btn-cura').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    const acao = btn.getAttribute('data-acao'); // 'dano' ou 'cura'
+    const valor = parseInt(btn.getAttribute('data-valor')) || 1;
+    const id = <%= personagem.id %>;
+
+    let url, campo;
+    if (acao === 'dano') {
+      url = `/personagens/${id}/danoJson`;   // rota JSON (criaremos abaixo)
+      campo = 'dano';
+    } else if (acao === 'cura') {
+      url = `/personagens/${id}/curaJson`;
+      campo = 'cura';
+    } else if (acao === 'danoSanidade') {
+      url = `/personagens/${id}/danoSanidadeJson`;
+      campo = 'dano';
+    } else if (acao === 'curaSanidade') {
+      url = `/personagens/${id}/curaSanidadeJson`;
+      campo = 'cura';
+    } else return;
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [campo]: valor })
+      });
+      const data = await response.json();
+      if (response.ok && data.ok) {
+        // Atualiza a interface com os novos valores (vida, sanidade, barras)
+        const resDados = await fetch(`/personagens/${id}/dadosJson`);
+        const novosDados = await resDados.json();
+        atualizarInterface(novosDados);
+      } else {
+        alert(data.erro || 'Erro ao aplicar efeito');
+      }
+    } catch (err) {
+      alert('Erro de conexão');
+    }
+  });
+});
 
   // ======================
   // FUNÇÃO PARA ATUALIZAR O CARD DA HABILIDADE

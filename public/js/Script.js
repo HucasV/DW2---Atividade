@@ -100,6 +100,5 @@ document.addEventListener('DOMContentLoaded', function() {
     // Converter para base64 e armazenar
     const base64Image = croppedCanvas.toDataURL('image/jpeg', 0.9);
     hiddenInput.value = base64Image;
-    alert('Recorte aplicado! A imagem será salva ao enviar o formulário.');
   });
 });

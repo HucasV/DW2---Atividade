@@ -114,7 +114,6 @@ document.addEventListener('DOMContentLoaded', function() {
     ctx.drawImage(croppedCanvas, 0, 0, 150, 150);
     previewArea.style.display = 'block';
     hiddenInput.value = croppedCanvas.toDataURL('image/jpeg', 0.9);
-    alert('Recorte aplicado!');
     return true;
   }
 

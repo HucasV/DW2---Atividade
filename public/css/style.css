@@ -179,7 +179,7 @@ nav ul li a:hover {
   background: #0a0a0a;
 }
 
-/* Nome do usuário (opcional, esconde em mobile) */
+/* Nome do usuário*/
 .perfil-nav span {
   font-size: 26px;
   font-weight: normal;
@@ -229,7 +229,12 @@ h1 {
   width: 70%;
   padding: 20px;
 }
-
+.img-ficha {
+  width: 150px;
+  height: 200px;
+  object-fit: cover;
+  flex-shrink: 0; /* impede que a imagem encolha */
+}
 .img-personagem{
 height: 300px;
 width: auto;
@@ -1245,7 +1250,7 @@ background-color: #00000000;
   text-shadow: 0 0 5px #ff0033;
 }
 
-/* Tabela responsiva (opcional) */
+/* Tabela responsiva*/
 .tabela-campanha {
   width: 100%;
   border-collapse: collapse;
@@ -1748,7 +1753,7 @@ background-color: #00000000;
   font-family: "Rationale", sans-serif;
 }
 
-/* Tabela responsiva (opcional) */
+/* Tabela responsiva */
 .tabela-campanha {
   width: 100%;
   border-collapse: collapse;
