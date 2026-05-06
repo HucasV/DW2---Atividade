@@ -3,12 +3,12 @@ const session = require("express-session");
 const db = require("./db");
 const multer = require("multer");
 const path = require("path");
-
 const app = express();
+const bcrypt = require('bcrypt');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // <-- ESSENCIAL PARA FETCH JSON
 app.use(express.static("public"));
-// ======================
+// ======================npp
 // UPLOAD (MULTER)
 // ======================
 const storage = multer.diskStorage({
@@ -85,13 +85,35 @@ app.use(async (req, res, next) => {
   next();
 });
 
+
+
 // ======================
-// LOGIN
+// CADASTRO (corrigido)
 // ======================
-app.get("/login", (req, res) => {
-  res.render("login", { erro: null });
+app.post("/cadastro", async (req, res) => {
+  const { nome, email, senha, role } = req.body;
+  try {
+    // Gera o hash da senha
+    const saltRounds = 10;
+    const hash = await bcrypt.hash(senha, saltRounds);
+    
+    await db.query(
+      "INSERT INTO jogador (nome, email, senha, role) VALUES (?, ?, ?, ?)",
+      [nome, email, hash, role || 'jogador']
+    );
+    res.redirect("/login");
+  } catch (err) {
+    if (err.code === "ER_DUP_ENTRY") {
+      return res.send("Email já cadastrado");
+    }
+    console.error(err);
+    res.send("Erro ao cadastrar");
+  }
 });
 
+// ======================
+// LOGIN (corrigido)
+// ======================
 app.post("/login", async (req, res) => {
   const { email, senha } = req.body;
 
@@ -106,36 +128,15 @@ app.post("/login", async (req, res) => {
 
   const usuario = usuarios[0];
 
-  if (senha.trim() !== usuario.senha) {
+  // Compara a senha fornecida com o hash armazenado
+  const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
+  if (!senhaCorreta) {
     return res.render("login", { erro: "Senha incorreta" });
   }
 
   req.session.userId = usuario.id;
   req.session.userRole = usuario.role;
   res.redirect("/");
-});
-
-// ======================
-// CADASTRO
-// ======================
-app.get("/cadastro", (req, res) => {
-  res.render("cadastro");
-});
-
-app.post("/cadastro", async (req, res) => {
-  const { nome, email, senha, role } = req.body;
-  try {
-    await db.query(
-      "INSERT INTO jogador (nome, email, senha, role) VALUES (?, ?, ?, ?)",
-      [nome, email, senha, role || 'jogador']
-    );
-    res.redirect("/login");
-  } catch (err) {
-    if (err.code === "ER_DUP_ENTRY") {
-      return res.send("Email já cadastrado");
-    }
-    res.send("Erro ao cadastrar");
-  }
 });
 
 
@@ -194,6 +195,7 @@ const avatarStorage = multer.diskStorage({
 const uploadAvatar = multer({ storage: avatarStorage });
 
 const sharp = require('sharp');
+const { genSalt } = require("bcrypt");
 
 app.post("/perfil/update", verificarLogin, async (req, res) => {
   console.log('Corpo recebido:', req.body); // <-- debug
