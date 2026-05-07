@@ -1,0 +1,24 @@
+// routes/campanhaRoutes.js
+const express = require("express");
+const router = express.Router();
+const { verificarLogin } = require("../middlewares/auth");
+const campanhaController = require("../controllers/campanhaController");
+
+router.get("/campanhas/mestre", verificarLogin, campanhaController.listarMestre);
+router.get("/campanhas/nova", verificarLogin, campanhaController.novaForm);
+router.post("/campanhas/nova", verificarLogin, campanhaController.criar);
+router.get("/campanhas/:id/gerenciar", verificarLogin, campanhaController.gerenciar);
+router.post("/campanhas/:id/adicionar-jogador", verificarLogin, campanhaController.adicionarJogador);
+router.post("/campanhas/:id/remover-jogador", verificarLogin, campanhaController.removerJogador);
+router.post("/campanhas/:id/atribuir-personagem", verificarLogin, campanhaController.atribuirPersonagem);
+router.post("/campanhas/:id/remover-personagem", verificarLogin, campanhaController.removerPersonagem);
+router.get("/campanhas/jogador", verificarLogin, campanhaController.listarJogador);
+router.post("/campanhas/:id/escolher-personagem", verificarLogin, campanhaController.escolherPersonagem);
+router.post("/campanhas/:id/delete", verificarLogin, campanhaController.deletar);
+router.post("/campanhas/:id/solicitar", verificarLogin, campanhaController.solicitar);
+router.get("/minhas-solicitacoes", verificarLogin, campanhaController.minhasSolicitacoes);
+router.get("/solicitacoes", verificarLogin, campanhaController.listarSolicitacoesJson);
+router.post("/solicitacoes/:id/aceitar", verificarLogin, campanhaController.aceitarSolicitacao);
+router.post("/solicitacoes/:id/recusar", verificarLogin, campanhaController.recusarSolicitacao);
+
+module.exports = router;

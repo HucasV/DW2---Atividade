@@ -349,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.sanidade-max-editable').forEach(span => criarEditor(span, 'max', 'sanidade'));
 
 // ======================
-// DANO / CURA VIA AJAX (vida e sanidade)
+// DANO / CURA VIA AJAX 
 // ======================
 document.querySelectorAll('.btn-dano, .btn-cura').forEach(btn => {
   btn.addEventListener('click', async (e) => {
@@ -359,7 +359,7 @@ document.querySelectorAll('.btn-dano, .btn-cura').forEach(btn => {
 
     let url, campo;
     if (acao === 'dano') {
-      url = `/personagens/${id}/danoJson`;   // rota JSON (criaremos abaixo)
+      url = `/personagens/${id}/danoJson`; 
       campo = 'dano';
     } else if (acao === 'cura') {
       url = `/personagens/${id}/curaJson`;
@@ -642,7 +642,7 @@ document.querySelectorAll('.btn-dano, .btn-cura').forEach(btn => {
   div.style.marginBottom = '10px';
   div.innerHTML = `
     <strong>${hab.nome}</strong> (${hab.tipo}, ${hab.modo}) 
-    <button class="btn-copiar-habilidade" data-id="${hab.id}" data-tipo="pessoal">➕ Copiar</button>
+    <button class="btn-copiar-habilidade" data-id="${hab.id}" data-tipo="pessoal">Copiar</button>
     <button class="btn-deletar-biblioteca btn-seta" data-id="${hab.id}" style="margin-left:10px;">🗑️</button>
   `;
   listaDiv.appendChild(div);
@@ -680,7 +680,7 @@ document.querySelectorAll('.btn-dano, .btn-cura').forEach(btn => {
             div.innerHTML = `
               <strong>${hab.nome}</strong> (Nível ${hab.nivel}) - ${hab.dano || 'Sem dano'}<br>
               <small>${hab.descricao}</small><br>
-              <button class="btn-copiar-habilidade-divindade" data-id="${hab.id}">➕ Copiar</button>
+              <button class="btn-seta btn-copiar-habilidade-divindade" data-id="${hab.id}">Copiar</button>
             `;
             listaDiv.appendChild(div);
           });

@@ -7,6 +7,13 @@
   <form action="/perfil/update" method="POST" id="formPerfil">
     <div class="form-bloco">
       <h3>Avatar</h3>
+      <div class="perfil-avatar">
+  <% if (usuario.avatar) { %>
+    <img src="/uploads/avatars/<%= usuario.avatar %>" class="avatar-img" alt="Avatar atual">
+  <% } else { %>
+    <img src="/public/uploads/avatars/default-avatar.png" class="avatar-img" alt="Sem avatar">
+  <% } %>
+</div>
       <button type="button" id="selecionarImagemBtn" class="btn-seta"> Selecionar Imagem</button>
       <input type="file" id="inputImagem" accept="image/*" style="display: none;">
       <div id="cropperContainer" style="display: none; margin-top: 15px;">

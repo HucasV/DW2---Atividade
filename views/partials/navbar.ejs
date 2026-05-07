@@ -1,26 +1,25 @@
-
 <nav>
   <ul>
-       <img src="/img/Logo.webp" class="logo">
+    <img src="/img/Logo.webp" class="logo">
     <li><a href="/">Home</a></li>
     <li><a href="/personagens">Personagens</a></li>
     <li><a href="/regras">Regras</a></li>
     <% if (user) { %>
-  <% if (user.role === 'mestre') { %>
-    <li><a href="/campanhas/mestre">Campanhas</a></li>
-  <% } else { %>
-    <li><a href="/campanhas/jogador">Campanhas</a></li>
-  <% } %>
-<% } %>
-<% if (user && user.role === 'jogador') { %>
-  <li><a href="/minhas-solicitacoes">Convites</a></li>
-<% } %>
+      <% if (user.role === 'mestre') { %>
+        <li><a href="/campanhas/mestre">Campanhas</a></li>
+      <% } else { %>
+        <li><a href="/campanhas/jogador">Campanhas</a></li>
+      <% } %>
+    <% } %>
+    <% if (user && user.role === 'jogador') { %>
+      <li><a href="/minhas-solicitacoes">Convites</a></li>
+    <% } %>
     <li class="perfil-nav">
       <a href="/perfil">
         <% if (user && user.avatar) { %>
           <img src="/uploads/avatars/<%= user.avatar %>" class="avatar-nav">
         <% } else { %>
-          <img src="../../public/img/Logo.webp" class="avatar-nav">
+          <img src="/img/Logo.webp" class="avatar-nav">
         <% } %>
         <span><%= user ? user.nome : 'Perfil' %></span>
       </a>
