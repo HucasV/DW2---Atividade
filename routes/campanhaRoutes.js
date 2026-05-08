@@ -20,5 +20,5 @@ router.get("/minhas-solicitacoes", verificarLogin, campanhaController.minhasSoli
 router.get("/solicitacoes", verificarLogin, campanhaController.listarSolicitacoesJson);
 router.post("/solicitacoes/:id/aceitar", verificarLogin, campanhaController.aceitarSolicitacao);
 router.post("/solicitacoes/:id/recusar", verificarLogin, campanhaController.recusarSolicitacao);
-
+router.get("/jogadores/buscar", verificarLogin, campanhaController.buscarJogadores);
 module.exports = router;

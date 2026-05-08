@@ -146,6 +146,33 @@ async function recusarSolicitacao(req, res) {
   res.json({ ok: true });
 }
 
+async function buscarJogadores(req, res) {
+  // Apenas mestres podem buscar jogadores
+  if (req.session.userRole !== 'mestre') {
+    return res.status(403).json({ erro: "Acesso negado" });
+  }
+
+  const { q } = req.query;
+  if (!q || q.length < 2) {
+    return res.json([]);
+  }
+
+  try {
+    const [jogadores] = await db.query(
+      `SELECT id, nome, email 
+       FROM jogador 
+       WHERE (nome LIKE ? OR email LIKE ?) 
+         AND role = 'jogador'
+       LIMIT 10`,
+      [`%${q}%`, `%${q}%`]
+    );
+    res.json(jogadores);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json([]);
+  }
+}
+
 module.exports = {
   listarMestre,
   novaForm,
@@ -162,5 +189,6 @@ module.exports = {
   minhasSolicitacoes,
   listarSolicitacoesJson,
   aceitarSolicitacao,
-  recusarSolicitacao
+  recusarSolicitacao,
+  buscarJogadores
 };
