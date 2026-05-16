@@ -1,4 +1,3 @@
-// Middleware para disponibilizar 'user' em todas as views
 app.use((req, res, next) => {
   if (req.session.userId) {
     res.locals.user = {

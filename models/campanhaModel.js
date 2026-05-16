@@ -1,4 +1,4 @@
-// models/CampanhaModel.js
+
 const db = require("../config/db");
 
 async function findById(id) {

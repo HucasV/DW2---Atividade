@@ -1,0 +1,29 @@
+<hr>
+<div class="inventario-container">
+  <h2>Inventário</h2>
+  <button type="button" id="btnAdicionarItem" class="btn-seta">+ Adicionar Item</button>
+  <div id="listaInventario" class="itens-lista">
+    <!-- Itens serão carregados via AJAX -->
+  </div>
+</div>
+
+<!-- Modal para adicionar item -->
+<div id="modalAddItem" style="display:none; position:fixed; top:20%; left:30%; background:#0f0f0f; border:1px solid #00ff9c; padding:20px; z-index:1000; width:400px;">
+  <h3>Adicionar Item</h3>
+  <select id="tipoItemFiltro">
+    <option value="">Todos</option>
+    <option value="arma">Arma</option>
+    <option value="protecao">Proteção</option>
+    <option value="geral">Geral</option>
+    <option value="anomalo">Anômalo</option>
+  </select>
+  <div id="listaItensBiblioteca" style="max-height:200px; overflow-y:auto; margin-top:10px;"></div>
+  <button id="btnFecharModalAdd" class="btn-seta">Fechar</button>
+</div>
+
+<!-- Modal para modificações -->
+<div id="modalMods" style="display:none; position:fixed; top:20%; left:30%; background:#0f0f0f; border:1px solid #00ff9c; padding:20px; z-index:1000; width:400px;">
+  <h3>Modificações</h3>
+  <div id="listaModsDisponiveis"></div>
+  <button id="btnFecharModalMods" class="btn-seta">Fechar</button>
+</div>

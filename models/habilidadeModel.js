@@ -1,4 +1,4 @@
-// models/HabilidadeModel.js
+
 const db = require("../config/db");
 
 async function findById(id) {
@@ -33,4 +33,12 @@ async function deleteById(id) {
   await db.query("DELETE FROM habilidades WHERE id = ?", [id]);
 }
 
-module.exports = { findById, findByPersonagem, create, updateLevel, deleteById };
+async function findByIdAndPersonagem(id, id_personagem) {
+  const [rows] = await db.query(
+    "SELECT * FROM habilidades WHERE id = ? AND id_personagem = ?",
+    [id, id_personagem]
+  );
+  return rows[0];
+}
+
+module.exports = { findById, findByPersonagem, create, updateLevel, deleteById, findByIdAndPersonagem };

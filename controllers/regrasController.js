@@ -1,4 +1,3 @@
-// controllers/regrasController.js
 function exibirRegras(req, res) {
   const regras = [
     "Sistema baseado em 1d20 + atributo",

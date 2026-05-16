@@ -3,13 +3,13 @@
 
 <div class="campanhas-container">
   <div class="campanhas-header">
-    <h2>📖 Minhas Campanhas</h2>
+    <h2>Minhas Campanhas</h2>
     <p class="subtitulo">Aqui estão as aventuras das quais você participa</p>
   </div>
 
   <% if (campanhas.length === 0) { %>
     <div class="sem-campanhas">
-      <p>✨ Você não está em nenhuma campanha ainda.</p>
+      <p>Você não está em nenhuma campanha ainda.</p>
       <p>Peça ao mestre para te adicionar a uma aventura!</p>
     </div>
   <% } else { %>
@@ -19,7 +19,7 @@
           <div class="card-header">
             <h3><%= c.nome %></h3>
             <span class="status <%= c.personagens && c.personagens.length ? 'status-ok' : 'status-pendente' %>">
-              <%= c.personagens && c.personagens.length ? '✓ Personagem atribuído' : '⚠️ Sem personagem' %>
+              <%= c.personagens && c.personagens.length ? '✓ Personagem atribuído' : 'Sem personagem' %>
             </span>
           </div>
           <div class="card-body">
@@ -52,7 +52,7 @@
               <form action="/campanhas/<%= c.id %>/escolher-personagem" method="POST" class="form-personagem">
                 <div class="select-wrapper">
                   <select name="id_personagem" required>
-                    <option value="">🔽 Selecione um personagem</option>
+                    <option value="">Selecione um personagem</option>
                     <% personagensDoJogador.forEach(p => { %>
                       <option value="<%= p.id %>"><%= p.nome %></option>
                     <% }) %>

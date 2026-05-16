@@ -1,5 +1,4 @@
-// controllers/personagemController.js
-const PersonagemModel = require("../models/PersonagemModel");
+const PersonagemModel = require("../models/personagemModel");
 const HabilidadeModel = require("../models/HabilidadeModel");
 const { calcularPontosAtributoTotais, calcularPontosGastos, calcularDano } = require("../utils/rpgHelpers");
 
@@ -169,13 +168,18 @@ async function dadosJson(req, res) {
     const pontos_totais_atributo = 21 + (nivel - 1) * 2;
     const pontos_gastos_atributo = (forca-1)+(agilidade-1)+(constituicao-1)+(intelecto-1)+(atencao-1)+(estabilidade-1);
     const pontos_disponiveis_atributo = pontos_totais_atributo - pontos_gastos_atributo;
-
+    const bonus = await PersonagemModel.getBonus(id);
+    personagem.bonus_armadura = bonus?.bonus_armadura || 0;
+    personagem.bonus_outros = bonus?.bonus_outros || 0;
+    personagem.ca = bonus?.ca || 10;
+    const ca_final = 10 + agilidade + (personagem.bonus_armadura || 0) + (personagem.bonus_outros || 0) + (personagem.ca_equipamentos || 0);
     res.json({
       vida_atual: personagem.vida_atual,
       vida_max,
       sanidade_atual: personagem.sanidade_atual,
       sanidade_max,
-      pontos_disponiveis_atributo
+      pontos_disponiveis_atributo,
+      ca: ca_final
     });
   } catch (err) {
     console.error(err);
@@ -303,10 +307,6 @@ async function removerPersonagem(req, res) {
 
 async function aumentarAtributo(req, res) {
   const { id, tipo, operacao } = req.params;
-  // Implementação completa conforme original, usando PersonagemModel.update
-  // (código omitido por brevidade, mas igual ao original)
-  // Por limite de caracteres, será necessário replicar a lógica completa.
-  // Aqui vou colocar a mesma lógica do original usando o model.
   try {
     const tiposPermitidos = ["forca", "agilidade", "constituicao", "intelecto", "atencao", "estabilidade"];
     if (!tiposPermitidos.includes(tipo)) return res.status(400).json({ erro: "Atributo inválido" });
@@ -350,6 +350,13 @@ async function aumentarAtributo(req, res) {
     let novaVida = Math.min(Number(pAtualizado.vida_atual), novaVidaMax);
     let novaSanidade = Math.min(Number(pAtualizado.sanidade_atual), novaSanidadeMax);
     await PersonagemModel.update(id, { vida_atual: novaVida, sanidade_atual: novaSanidade });
+    let novaCA = null;
+    
+    if (tipo === 'agilidade') {
+      const bonus = await PersonagemModel.getBonus(id);
+      novaCA = 10 + novoValor + (bonus?.bonus_armadura || 0) + (bonus?.bonus_outros || 0);
+      await PersonagemModel.updateCA(id, novaCA);
+    }
 
     const pontosTotais = calcularPontosAtributoTotais(novoNivel);
     const novosGastos = calcularPontosGastos(
@@ -367,13 +374,99 @@ async function aumentarAtributo(req, res) {
       sanidade_atual: novaSanidade,
       sanidade_max: novaSanidadeMax,
       pontos_disponiveis_atributo: novosPontosAtributo,
-      pontos_totais_atributo: pontosTotais
+      pontos_totais_atributo: pontosTotais,
+      ca: novaCA  // PODE SER NULL SE NÃO FOR AGILIDADE
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({ erro: "Erro interno" });
   }
 }
+
+async function atualizarBonus(req, res) {
+  try {
+    const { id } = req.params;
+    const { bonus_armadura, bonus_outros } = req.body;
+    const armadura = parseInt(bonus_armadura) || 0;
+    const outros = parseInt(bonus_outros) || 0;
+
+    const resultado = await PersonagemModel.updateBonus(id, armadura, outros);
+    res.json({ ok: true, ca: resultado.ca });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao salvar bônus" });
+  }
+}
+
+const { rollD20, rollDice, formatRollResult } = require("../utils/diceRoller");
+
+async function rolarAtributo(req, res) {
+  try {
+    const { id, atributo } = req.params;
+    const atributosPermitidos = ["forca", "agilidade", "constituicao", "intelecto", "atencao", "estabilidade"];
+    
+    if (!atributosPermitidos.includes(atributo)) {
+      return res.status(400).json({ erro: "Atributo inválido" });
+    }
+    
+    const personagem = await PersonagemModel.findByIdAndJogador(id, req.session.userId);
+    if (!personagem) return res.status(404).json({ erro: "Personagem não encontrado" });
+    
+    const valorAtributo = Number(personagem[atributo]) || 1;
+    const resultado = rollD20(valorAtributo);
+    const formatado = formatRollResult(resultado, 'd20');
+    
+    // Salva no log (opcional - você pode criar uma tabela de logs)
+    console.log(`[ROLL] ${personagem.nome} rolou ${atributo}: ${formatado.total}`);
+    
+    res.json({
+      ok: true,
+      tipo: 'atributo',
+      atributo,
+      valorAtributo,
+      ...formatado
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao rolar dado" });
+  }
+}
+
+async function rolarHabilidade(req, res) {
+  try {
+    const { id, idHabilidade } = req.params;
+    
+    const personagem = await PersonagemModel.findByIdAndJogador(id, req.session.userId);
+    if (!personagem) return res.status(404).json({ erro: "Personagem não encontrado" });
+    
+    const habilidade = await HabilidadeModel.findByIdAndPersonagem(idHabilidade, id);
+    if (!habilidade) {
+      return res.status(404).json({ erro: "Habilidade não encontrada" });
+    }
+    
+    const danoString = habilidade.dano_fixo || calcularDano(Number(habilidade.nivel), habilidade.tipo);
+    const resultado = rollDice(danoString);
+    const formatado = formatRollResult(resultado, 'dice');
+    
+    console.log(`[ROLL] ${personagem.nome} usou ${habilidade.nome}: ${formatado.total} ${habilidade.tipo === 'cura' ? 'cura' : 'dano'}`);
+    
+    res.json({
+      ok: true,
+      tipo: 'habilidade',
+      habilidade: {
+        id: habilidade.id,
+        nome: habilidade.nome,
+        tipo: habilidade.tipo
+      },
+      danoString,
+      ...formatado
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao rolar dano da habilidade" });
+  }
+}
+
 
 module.exports = {
   listar,
@@ -390,5 +483,8 @@ module.exports = {
   editarVidaJson,
   editarSanidadeJson,
   removerPersonagem,
-  aumentarAtributo
+  aumentarAtributo,
+  atualizarBonus,
+  rolarAtributo,
+  rolarHabilidade
 };

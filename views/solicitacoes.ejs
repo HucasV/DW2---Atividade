@@ -32,8 +32,6 @@
       });
       html += '</ul>';
       container.innerHTML = html;
-
-      // Aceitar
       document.querySelectorAll('.aceitar').forEach(btn => {
         btn.addEventListener('click', async () => {
           const id = btn.getAttribute('data-id');
@@ -46,7 +44,6 @@
           }
         });
       });
-      // Recusar
       document.querySelectorAll('.recusar').forEach(btn => {
         btn.addEventListener('click', async () => {
           const id = btn.getAttribute('data-id');

@@ -1,4 +1,3 @@
-// app.js
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
@@ -13,9 +12,10 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
+app.use(carregarUsuario);
 app.set("view engine", "ejs");
 
-app.use(carregarUsuario);
+
 
 
 // Importar rotas
@@ -25,6 +25,7 @@ const personagemRoutes = require("./routes/personagemRoutes");
 const habilidadeRoutes = require("./routes/habilidadeRoutes");
 const campanhaRoutes = require("./routes/campanhaRoutes");
 const regrasRoutes = require("./routes/regrasRoutes");
+const inventarioRoutes = require("./routes/inventarioRoutes");
 
 // Usar rotas
 app.use(authRoutes);
@@ -33,6 +34,7 @@ app.use(personagemRoutes);
 app.use(habilidadeRoutes);
 app.use(campanhaRoutes);
 app.use(regrasRoutes);
+app.use(inventarioRoutes);
 
 const PORT = 8080;
 app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}`));

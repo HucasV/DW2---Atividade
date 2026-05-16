@@ -1,4 +1,3 @@
-// middlewares/userMiddleware.js
 const jogadorModel = require("../models/JogadorModel");
 
 async function carregarUsuario(req, res, next) {

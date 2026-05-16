@@ -107,8 +107,6 @@
           });
           html += '</ul>';
           resultadoDiv.innerHTML = html;
-
-          // Adicionar evento aos botões de solicitação
           document.querySelectorAll('.solicitar-btn').forEach(btn => {
             btn.addEventListener('click', () => {
               const idJogador = btn.getAttribute('data-id');

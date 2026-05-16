@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
       cropperContainer.style.display = 'block';
       if (cropper) cropper.destroy();
       cropper = new Cropper(imagemCropper, {
-        aspectRatio: 1 / 1,   // Quadrado
+        aspectRatio: 1 / 1,  
         viewMode: 1,
         autoCropArea: 0.8,
         dragMode: 'move',
@@ -102,3 +102,4 @@ document.addEventListener('DOMContentLoaded', function() {
     hiddenInput.value = base64Image;
   });
 });
+

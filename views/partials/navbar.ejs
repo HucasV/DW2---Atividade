@@ -15,14 +15,14 @@
       <li><a href="/minhas-solicitacoes">Convites</a></li>
     <% } %>
     <li class="perfil-nav">
-      <a href="/perfil">
-        <% if (user && user.avatar) { %>
-          <img src="/uploads/avatars/<%= user.avatar %>" class="avatar-nav">
-        <% } else { %>
-          <img src="/img/Logo.webp" class="avatar-nav">
-        <% } %>
-        <span><%= user ? user.nome : 'Perfil' %></span>
-      </a>
-    </li>
+  <a href="/perfil">
+    <% if (user && user.avatar) { %>
+      <img src="/uploads/avatars/<%= user.avatar %>" class="avatar-nav" alt="Avatar">
+    <% } else { %>
+      <img src="/img/avatar-padrao.png" class="avatar-nav" alt="Perfil">
+    <% } %>
+    <span><%= user ? user.nome : 'Perfil' %></span>
+  </a>
+</li>
   </ul>
 </nav>

@@ -134,11 +134,10 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const pontosTotais = 21; // nível 1
+  const pontosTotais = 21; 
   const atributos = ['forca', 'agilidade', 'constituicao', 'intelecto', 'atencao', 'estabilidade'];
   const valores = {};
 
-  // Inicializa valores
   atributos.forEach(attr => {
     valores[attr] = 1;
     document.getElementById(`${attr}-val`).innerText = 1;
@@ -156,7 +155,6 @@ document.addEventListener('DOMContentLoaded', function() {
   function atualizarInterface() {
     const usados = calcularPontosUsados();
     const disponiveis = pontosTotais - usados;
-    // CORREÇÃO: usar o ID correto
     document.getElementById('pontos-atributo-disponiveis').innerText = disponiveis;
 
     for (let attr of atributos) {
@@ -190,15 +188,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Adiciona eventos
   for (let attr of atributos) {
     const mais = document.querySelector(`button[data-atributo="${attr}"][data-op="mais"]`);
     const menos = document.querySelector(`button[data-atributo="${attr}"][data-op="menos"]`);
     if (mais) mais.addEventListener('click', () => alterarAtributo(attr, 'mais'));
     if (menos) menos.addEventListener('click', () => alterarAtributo(attr, 'menos'));
   }
-
-  // Preview da imagem
   const inputImagem = document.getElementById('imagem-input');
   const previewContainer = document.getElementById('preview-container');
   const previewImg = document.getElementById('imagem-preview');
@@ -218,7 +213,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Validação antes de enviar
   const form = document.getElementById('formCriar');
   form.addEventListener('submit', function(e) {
     const disponiveis = pontosTotais - calcularPontosUsados();

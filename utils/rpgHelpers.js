@@ -1,4 +1,3 @@
-// utils/rpgHelpers.js
 function calcularCusto(nivel, tipo, modo, temEfeito) {
   let custo = 1; // base para ativas
   if (tipo === 'cura') custo++;

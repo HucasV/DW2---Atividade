@@ -1,4 +1,3 @@
-// controllers/authController.js
 const bcrypt = require("bcrypt");
 const JogadorModel = require("../models/JogadorModel");
 
@@ -47,7 +46,12 @@ function logout(req, res) {
 }
 
 function home(req, res) {
-  res.render("home", { user: { id: req.session.userId, role: req.session.userRole } });
+  const user = res.locals.user || (req.session.userId ? { 
+    id: req.session.userId, 
+    role: req.session.userRole 
+  } : null);
+  
+  res.render("home", { user });
 }
 
 module.exports = { exibirCadastro, cadastrar, exibirLogin, login, logout, home };

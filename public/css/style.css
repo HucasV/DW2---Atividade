@@ -24,7 +24,6 @@ section {
   text-decoration: underline;
 }
 
-/* NPC CARDS */
 
 .npc-item {
   cursor: pointer;
@@ -117,7 +116,7 @@ body {
   margin: 0;
 }
 /* ========================= */
-/* 🌟 NAVBAR */
+/*  NAVBAR */
 /* ========================= */
 nav {
   background: #111;
@@ -134,7 +133,7 @@ nav ul {
   padding: 0;
 }
 
-/* Links principais */
+
 nav ul li a {
   color: #00ff9c;
   text-decoration: none;
@@ -148,7 +147,7 @@ nav ul li a:hover {
   text-shadow: 0 0 5px #00ff9c, 0 0 10px #00ff9c;
 }
 
-/* Item do perfil (à direita) */
+
 .perfil-nav {
   margin-left: auto;
 }
@@ -169,7 +168,7 @@ nav ul li a:hover {
   box-shadow: 0 0 8px #00ff9c55;
 }
 
-/* Avatar circular */
+
 .avatar-nav {
   width: 56px;
   height: 56px;
@@ -179,14 +178,14 @@ nav ul li a:hover {
   background: #0a0a0a;
 }
 
-/* Nome do usuário*/
+
 .perfil-nav span {
   font-size: 26px;
   font-weight: normal;
   color: #00ff9c;
 }
 
-/* Responsivo: em telas pequenas, esconde o nome e reduz avatar */
+
 @media (max-width: 700px) {
   .perfil-nav span {
     display: none;
@@ -224,7 +223,7 @@ h1 {
   background: #003d2b;
 }
 
-/* DETALHES */
+
 .detalhes {
   width: 70%;
   padding: 20px;
@@ -233,7 +232,7 @@ h1 {
   width: 150px;
   height: 200px;
   object-fit: cover;
-  flex-shrink: 0; /* impede que a imagem encolha */
+  flex-shrink: 0; 
 }
 .img-personagem{
 height: 300px;
@@ -414,7 +413,6 @@ ul li {
   background: #111;
 }
 
-/* efeito hover */
 .tabela-dano tbody tr:hover {
   background: #003d2b;
 }
@@ -460,7 +458,7 @@ ul li {
 }
 
 /* ========================= */
-/* 🎮 FICHA RPG */
+/* FICHA */
 /* ========================= */
 
 .ficha {
@@ -476,14 +474,14 @@ ul li {
     0 0 25px #00ff9c11;
 }
 
-/* TOPO */
+
 .topo {
   display: flex;
   gap: 20px;
   align-items: center;
 }
 
-/* IMAGEM */
+
 .img-ficha {
   width: 150px;
   height: 200px;
@@ -495,13 +493,13 @@ ul li {
   box-shadow: 0 0 10px #00ff9c55;
 }
 
-/* INFO */
+
 .info p {
   margin: 5px 0;
 }
 
 /* ========================= */
-/* ❤️ BARRA DE VIDA */
+/* BARRA DE VIDA */
 /* ========================= */
 
 .vida-container {
@@ -534,7 +532,7 @@ ul li {
 }
 
 /* ========================= */
-/* 🔼🔽 BOTÕES */
+/* BOTÕES */
 /* ========================= */
 
 .btn-seta {
@@ -557,7 +555,7 @@ ul li {
 }
 
 /* ========================= */
-/* ⚙️ ATRIBUTOS */
+/* ATRIBUTOS */
 /* ========================= */
 
 .atributos {
@@ -567,7 +565,7 @@ ul li {
 }
 
 .attr {
-  width: 70px;
+  width: 100px;
   padding: 10px;
 
   background: #111;
@@ -686,7 +684,7 @@ h2 {
   transition: 0.2s;
 }
 
-/* hover */
+
 .btn-delete:hover {
   background: #330000;
 
@@ -697,13 +695,13 @@ h2 {
   color: #ff1a1a;
 }
 
-/* clique */
+
 .btn-delete:active {
   transform: scale(0.95);
 }
 
 /* ========================= */
-/* 🧾 FORMULÁRIO */
+/* FORMULÁRIO */
 /* ========================= */
 
 .form-container {
@@ -719,7 +717,7 @@ h2 {
     0 0 25px #00ff9c11;
 }
 
-/* blocos */
+
 .form-bloco {
   margin-bottom: 20px;
   padding: 15px;
@@ -728,13 +726,12 @@ h2 {
   background: #0a0a0a;
 }
 
-/* títulos */
+
 .form-bloco h3 {
   margin-bottom: 10px;
   color: #00ff9c;
 }
 
-/* inputs */
 input, textarea {
   width: 100%;
   margin-bottom: 10px;
@@ -748,7 +745,7 @@ input, textarea {
   font-family: "Rationale", sans-serif;
 }
 
-/* foco */
+
 input:focus, textarea:focus {
   outline: none;
 
@@ -757,14 +754,14 @@ input:focus, textarea:focus {
     0 0 10px #00ff9c;
 }
 
-/* grid atributos */
+
 .grid-atributos {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 }
 
-/* botão */
+
 .btn-criar {
   width: 100%;
   margin-top: 10px;
@@ -772,7 +769,6 @@ input:focus, textarea:focus {
   font-size: 18px;
 }
 
-/* remove setinhas */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -795,7 +791,7 @@ input[type="number"] {
   transition: 0.2s;
 }
 
-/* hover */
+
 .file-upload:hover {
   background: #003d2b;
 
@@ -804,12 +800,12 @@ input[type="number"] {
     0 0 10px #00ff9c;
 }
 
-/* esconde o input real */
+
 .file-upload input {
   display: none;
 }
 
-/* HERO */
+
 .hero {
   display: flex;
   align-items: center;
@@ -838,7 +834,7 @@ input[type="number"] {
   box-shadow: 0 0 20px #00ff9c55;
 }
 
-/* BOTÃO PRINCIPAL */
+
 .btn-main {
   display: inline-block;
   margin-top: 20px;
@@ -860,7 +856,7 @@ input[type="number"] {
     0 0 15px #00ff9c;
 }
 
-/* SEÇÕES */
+
 .secao {
   padding: 80px 20%;
   text-align: center;
@@ -878,7 +874,7 @@ input[type="number"] {
   color: #cfcfcf;
 }
 
-/* alternar fundo */
+
 .secao.alt {
   background: #0f0f0f;
 }
@@ -912,6 +908,13 @@ input[type="number"] {
   padding: 8px;
 }
 
+.forms {
+  background: #0a0a0a;
+  border: 1px solid #00ff9c;
+  color: #00ff9c;
+  padding: 8px;
+}
+
 .form-habilidade button {
   background: transparent;
   border: 1px solid #00ff9c;
@@ -928,10 +931,10 @@ input[type="number"] {
 }
 
 /* ========================= */
-/* ❤️ BARRA DE VIDA E SANIDADE */
+/* BARRA DE SANIDADE */
 /* ========================= */
 
-/* Container geral para cada barra (vida ou sanidade) */
+
 .vida-container {
   display: flex;
   align-items: center;
@@ -939,8 +942,7 @@ input[type="number"] {
   margin-bottom: 10px;
 }
 
-/* Fundo escuro da barra */
-/* Barra-bg como referência para posicionamento absoluto */
+
 .barra-bg {
   position: relative;
   width: 200px;
@@ -948,10 +950,10 @@ input[type="number"] {
   background: #111;
   border: 1px solid #00ff9c;
   border-radius: 8px;
-  overflow: hidden; /* esconde o excesso da barra colorida, mas o texto vai ficar por cima */
+  overflow: hidden; 
 }
 
-/* Barra colorida (preenchimento) */
+
 .barra-vida, .barra-sanidade {
   height: 100%;
   width: 0%;
@@ -968,7 +970,7 @@ input[type="number"] {
   background: linear-gradient(90deg, #9b59b6, #8e44ad);
 }
 
-/* Texto centralizado sobre toda a barra-bg */
+
 .barra-texto-centralizado {
   position: absolute;
   top: 0;
@@ -983,18 +985,17 @@ input[type="number"] {
   font-size: 14px;
   font-weight: bold;
   text-shadow: 0 0 2px black;
-  pointer-events: none; /* para que os cliques passem, mas vamos permitir nos spans */
+  pointer-events: none; 
 }
 
 .barra-texto-centralizado span {
-  pointer-events: auto; /* permite edição in-place */
+  pointer-events: auto; 
   background-color: rgba(0, 0, 0, 0.6);
   padding: 0 4px;
   border-radius: 4px;
   cursor: pointer;
 }
 
-/* Estilos para os números editáveis  */
 .vida-atual-editable, .vida-max-editable,
 .sanidade-atual-editable, .sanidade-max-editable {
   cursor: pointer;
@@ -1006,10 +1007,10 @@ input[type="number"] {
   text-align: center;
 }
 
-/* Input de edição (vida) */
+
 .editar-vida-input {
   width: 60px;
-  height: 25px;                /* mesma altura da barra */
+  height: 25px;                
   text-align: center;
   font-size: 14px;
   font-family: "Rationale", sans-serif;
@@ -1018,20 +1019,20 @@ background-color: #00000000;
   color: white;
   border: none;
   border-radius: 4px;
-  padding: 0 4px;             /* ajuste para centralizar texto */
+  padding: 0 4px;          
   margin: 0;
   outline: none;
   vertical-align: middle;
-  line-height: 1;             /* evita deslocamento vertical */
+  line-height: 1;             
   box-sizing: border-box;
-  text-shadow: 0 0 2px black; /* mesmo do texto da barra */
+  text-shadow: 0 0 2px black; 
 }
 .editar-vida-input:focus {
 background-color: #00000000;
-  box-shadow: none;           /* sem sombra extra */
+  box-shadow: none;          
 }
 
-/* Input de edição (sanidade) */
+
 .editar-sanidade-input {
   width: 60px;
   height: 25px;
@@ -1056,7 +1057,6 @@ background-color: #00000000;
   box-shadow: none;
 }
 
-/* Remove setinhas dos inputs number */
 .editar-vida-input::-webkit-inner-spin-button,
 .editar-vida-input::-webkit-outer-spin-button,
 .editar-sanidade-input::-webkit-inner-spin-button,
@@ -1068,7 +1068,6 @@ background-color: #00000000;
   -moz-appearance: textfield;
 }
 
-/* Organização dos atributos em grid */
 .atributos-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1109,7 +1108,7 @@ background-color: #00000000;
 .xp-buttons input {
   width: 100px;
 }
-/* Ajuste para telas pequenas */
+
 @media (max-width: 768px) {
   .atributos-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1134,10 +1133,10 @@ background-color: #00000000;
 }
 
 /* ========================= */
-/* 📁 CAMPANHAS - BASE */
+/*  CAMPANHAS*/
 /* ========================= */
 
-/* Container principal */
+
 .campanhas-container {
   width: 80%;
   margin: 30px auto;
@@ -1147,22 +1146,22 @@ background-color: #00000000;
   box-shadow: 0 0 10px #00ff9c22, 0 0 25px #00ff9c11;
 }
 
-/* Título da página */
+
 .campanhas-container h1 {
   text-align: center;
   text-shadow: 0 0 5px #00ff9c, 0 0 10px #00ff9c;
   margin-bottom: 20px;
 }
 
-/* Grid de cards de campanhas (lista) */
+
 .campanhas-grid {
   gap: 20px;
   margin-top: 20px;
-  display: grid !important; /* força o grid */
+  display: grid !important; 
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
 }
 
-/* Card de campanha */
+
 .card-campanha {
   background: #111;
   border: 1px solid #00ff9c;
@@ -1188,7 +1187,6 @@ background-color: #00000000;
   color: #00ffaa;
 }
 
-/* Botões de ação nas campanhas */
 .card-campanha .campanha-acoes {
   display: flex;
   justify-content: flex-end;
@@ -1196,7 +1194,6 @@ background-color: #00000000;
   margin-top: 10px;
 }
 
-/* Formulários de campanha */
 .form-campanha {
   display: flex;
   flex-direction: column;
@@ -1221,7 +1218,6 @@ background-color: #00000000;
   align-self: flex-start;
 }
 
-/* Lista de jogadores / personagens (box) */
 .lista-campanha {
   margin-top: 20px;
   border-top: 1px solid #00ff9c55;
@@ -1250,7 +1246,6 @@ background-color: #00000000;
   text-shadow: 0 0 5px #ff0033;
 }
 
-/* Tabela responsiva*/
 .tabela-campanha {
   width: 100%;
   border-collapse: collapse;
@@ -1268,7 +1263,6 @@ background-color: #00000000;
   color: #00ff9c;
 }
 
-/* Modal / popup de atribuição (pode ser usado no lugar do modal existente) */
 .modal-campanha {
   position: fixed;
   top: 50%;
@@ -1293,7 +1287,6 @@ background-color: #00000000;
   margin-right: 10px;
 }
 
-/* Overlay escuro para modal */
 .overlay-campanha {
   position: fixed;
   top: 0;
@@ -1304,7 +1297,6 @@ background-color: #00000000;
   z-index: 999;
 }
 
-/* Botão específico para campanhas */
 .btn-campanha {
   background: #111;
   color: #00ff9c;
@@ -1356,7 +1348,7 @@ background-color: #00000000;
 }
 
 /* ========================= */
-/* 🧙‍♂️ CAMPANHAS - JOGADOR */
+/* CAMPANHAS - JOGADOR */
 /* ========================= */
 
 .campanhas-header {
@@ -1386,7 +1378,7 @@ background-color: #00000000;
   margin-bottom: 10px;
 }
 
-/* Grid de cards */
+
 .campanhas-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -1394,7 +1386,6 @@ background-color: #00000000;
   margin-top: 20px;
 }
 
-/* Card individual */
 .card-campanha-jogador {
   background: #0a0a0a;
   border: 1px solid #00ff9c;
@@ -1480,7 +1471,7 @@ background-color: #00000000;
   white-space: nowrap;
 }
 
-/* Responsivo */
+
 @media (max-width: 700px) {
   .campanhas-grid {
     grid-template-columns: 1fr;
@@ -1512,10 +1503,10 @@ background-color: #00000000;
 }
 
 /* ========================= */
-/* 🎭 ATRIBUIR PERSONAGEM (JOGADOR) */
+/* ATRIBUIR PERSONAGEM (JOGADOR) */
 /* ========================= */
 
-/* Container do formulário de atribuição */
+
 .form-personagem {
   display: flex;
   gap: 12px;
@@ -1524,7 +1515,6 @@ background-color: #00000000;
   flex-wrap: wrap;
 }
 
-/* Wrapper do select (para consistência) */
 .select-wrapper {
   flex: 1;
   min-width: 180px;
@@ -1549,7 +1539,7 @@ background-color: #00000000;
   outline: none;
 }
 
-/* Cards de personagens já atribuídos (mesmo estilo da lista de personagens) */
+
 .personagens-atribuidos {
   margin-top: 20px;
   border-top: 1px dashed #00ff9c55;
@@ -1609,7 +1599,7 @@ background-color: #00000000;
   color: #cfcfcf;
 }
 
-/* Responsividade */
+
 @media (max-width: 600px) {
   .form-personagem {
     flex-direction: column;
@@ -1629,10 +1619,9 @@ background-color: #00000000;
 }
 
 /* ========================= */
-/* 🛠️ GERENCIAR CAMPANHA (MESTRE) */
+/*  GERENCIAR CAMPANHA */
 /* ========================= */
 
-/* Formulário de adicionar jogador (por ID) */
 .form-campanha {
   display: flex;
   gap: 12px;
@@ -1657,7 +1646,7 @@ background-color: #00000000;
   box-shadow: 0 0 5px #00ff9c;
 }
 
-/* Lista de jogadores */
+
 .lista-item {
   display: flex;
   justify-content: space-between;
@@ -1675,7 +1664,7 @@ background-color: #00000000;
   box-shadow: 0 0 6px #00ff9c;
 }
 
-/* Sub‑seção de personagens (dentro de cada jogador) */
+
 .personagens-wrapper {
   margin-left: 20px;
   margin-bottom: 20px;
@@ -1689,7 +1678,6 @@ background-color: #00000000;
   margin-bottom: 10px;
 }
 
-/* Lista de personagens atribuídos (cards em grid) */
 .personagens-atribuidos-grid {
   display: flex;
   flex-direction: column;
@@ -1729,13 +1717,11 @@ background-color: #00000000;
   color: #cfcfcf;
 }
 
-/* Formulário inline para desatribuir */
 .form-inline {
   display: inline-block;
   margin-left: 10px;
 }
 
-/* Formulário de adicionar personagem (select + botão) */
 .form-add-personagem {
   display: flex;
   gap: 10px;
@@ -1753,7 +1739,6 @@ background-color: #00000000;
   font-family: "Rationale", sans-serif;
 }
 
-/* Tabela responsiva */
 .tabela-campanha {
   width: 100%;
   border-collapse: collapse;
@@ -1773,7 +1758,6 @@ background-color: #00000000;
   color: #00ff9c;
 }
 
-/* Responsivo */
 @media (max-width: 768px) {
   .lista-item {
     flex-direction: column;
@@ -1795,3 +1779,117 @@ background-color: #00000000;
     width: 100%;
   }
 }
+
+
+.roll-modal {
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.roll-modal-content {
+  background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+  border: 2px solid #00ff9c;
+  border-radius: 15px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 0 30px rgba(0,255,156,0.3);
+  animation: rollPulse 0.5s ease;
+}
+
+@keyframes rollPulse {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.roll-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #00ff9c;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.roll-header h3 {
+  margin: 0;
+  color: #00ff9c;
+}
+
+.roll-close {
+  cursor: pointer;
+  font-size: 28px;
+  font-weight: bold;
+  color: #ff4444;
+}
+
+.roll-close:hover {
+  color: #ff8888;
+}
+
+.roll-body {
+  padding: 20px;
+  text-align: center;
+}
+
+.roll-message {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.roll-details {
+  font-size: 14px;
+  color: #aaa;
+  margin-bottom: 15px;
+  font-family: monospace;
+}
+
+.roll-total {
+  font-size: 36px;
+  font-weight: bold;
+  color: #00ff9c;
+  text-shadow: 0 0 10px #00ff9c;
+}
+
+.critical {
+  color: #ffaa00;
+  text-shadow: 0 0 10px #ffaa00;
+}
+
+.fumble {
+  color: #ff4444;
+  text-shadow: 0 0 10px #ff4444;
+}
+
+.roll-footer {
+  padding: 15px;
+  border-top: 1px solid #333;
+  text-align: center;
+}
+
+.itens-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+.item-card {
+  background: #111;
+  border: 1px solid #00ff9c;
+  border-radius: 8px;
+  padding: 10px;
+}
+.item-equipado {
+  border-left: 5px solid #00ff9c;
+  background: #1a1a2e;
+}
+.item-tipo-arma { border-top: 3px solid #ff4444; }
+.item-tipo-protecao { border-top: 3px solid #44ff44; }
+.item-tipo-geral { border-top: 3px solid #ffff44; }
+.item-tipo-anomalo { border-top: 3px solid #ff44ff; }

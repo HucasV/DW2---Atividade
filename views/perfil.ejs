@@ -126,7 +126,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   btnAplicar.addEventListener('click', aplicarRecorte);
 
-  // Auto‑aplicação ao enviar o formulário
   form.addEventListener('submit', (event) => {
     if (cropper && !hiddenInput.value) {
       event.preventDefault();

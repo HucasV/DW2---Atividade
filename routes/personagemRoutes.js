@@ -1,4 +1,3 @@
-// routes/personagemRoutes.js
 const express = require("express");
 const router = express.Router();
 const { verificarLogin } = require("../middlewares/auth");
@@ -20,5 +19,8 @@ router.post("/personagens/:id/curaSanidadeJson", verificarLogin, personagemContr
 router.post("/personagens/:id/editarVidaJson", verificarLogin, personagemController.editarVidaJson);
 router.post("/personagens/:id/editarSanidadeJson", verificarLogin, personagemController.editarSanidadeJson);
 router.post("/personagens/:id/atributo/:tipo/:operacao", verificarLogin, personagemController.aumentarAtributo);
+router.post("/personagens/:id/atualizarBonus", verificarLogin, personagemController.atualizarBonus);
+router.post("/personagens/:id/rolar-atributo/:atributo", verificarLogin, personagemController.rolarAtributo);
+router.post("/personagens/:id/habilidade/:idHabilidade/rolar", verificarLogin, personagemController.rolarHabilidade);
 
 module.exports = router;

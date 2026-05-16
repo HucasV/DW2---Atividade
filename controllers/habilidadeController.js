@@ -1,6 +1,6 @@
-// controllers/habilidadeController.js
+
 const HabilidadeModel = require("../models/HabilidadeModel");
-const PersonagemModel = require("../models/PersonagemModel");
+const PersonagemModel = require("../models/personagemModel");
 const { calcularCusto, calcularDano } = require("../utils/rpgHelpers");
 const db = require("../config/db");
 
@@ -293,11 +293,11 @@ async function copiarDivindade(req, res) {
     );
     if (!personagem) return res.status(404).json({ erro: "Personagem não encontrado" });
 
-    // Calcula o custo (metade da vida e sanidade atuais, ou conforme sua regra)
+    
     const custoVida = Math.floor(personagem.vida_atual / 2);
     const custoSanidade = Math.floor(personagem.sanidade_atual / 2);
 
-    // Verifica pontos de habilidade do personagem
+    
     const nivel = Number(personagem.nivel);
     const pontosTotais = 3 + (nivel - 1) * 2;
     const [habilidadesAtuais] = await db.query(
@@ -309,7 +309,7 @@ async function copiarDivindade(req, res) {
       return res.status(400).json({ erro: "Sem pontos disponíveis para adicionar habilidade" });
     }
 
-    // Insere a habilidade na ficha do personagem
+    
     const [result] = await db.query(
       `INSERT INTO habilidades 
       (nome, tipo, modo, id_personagem, descricao, tipo_acao, custo_vida, custo_sanidade, efeito, is_upgradeable, dano_fixo) 
@@ -317,15 +317,15 @@ async function copiarDivindade(req, res) {
       [
         habDiv.nome,
         habDiv.tipo,
-        'alvo_unico',               // ou habDiv.modo se existir
+        'alvo_unico',             
         id_personagem,
         habDiv.descricao,
-        'ativa',                    // ou habDiv.tipo_acao
+        'ativa',                    
         custoVida,
         custoSanidade,
         habDiv.efeito,
-        0,                          // is_upgradeable = 0 (fixa)
-        habDiv.dano                 // dano_fixo (ex: "5d10")
+        0,                          
+        habDiv.dano                
       ]
     );
 

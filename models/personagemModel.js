@@ -1,4 +1,4 @@
-// models/PersonagemModel.js
+
 const db = require("../config/db");
 
 async function findByIdAndJogador(id, id_jogador) {
@@ -44,4 +44,31 @@ async function deleteById(id, id_jogador) {
   await db.query("DELETE FROM personagens WHERE id = ? AND id_jogador = ?", [id, id_jogador]);
 }
 
-module.exports = { findByIdAndJogador, findAllByJogador, create, update, deleteById };
+
+async function getBonus(id) {
+  const [rows] = await db.query(
+    "SELECT bonus_armadura, bonus_outros FROM personagens WHERE id = ?",
+    [id]
+  );
+  return rows[0];
+}
+
+async function updateCA(id, ca) {
+  await db.query("UPDATE personagens SET ca = ? WHERE id = ?", [ca, id]);
+}
+
+async function updateBonus(id, bonusArmadura, bonusOutros) {
+  const [personagem] = await db.query("SELECT agilidade FROM personagens WHERE id = ?", [id]);
+  if (!personagem) throw new Error("Personagem não encontrado");
+  const agilidade = personagem.agilidade || 0;
+  const ca = 10 + agilidade + bonusArmadura + bonusOutros;
+  await db.query(
+    "UPDATE personagens SET bonus_armadura = ?, bonus_outros = ?, ca = ? WHERE id = ?",
+    [bonusArmadura, bonusOutros, ca, id]
+  );
+  return { ca };
+}
+
+
+
+module.exports = { findByIdAndJogador, findAllByJogador, create, update, deleteById, getBonus, updateCA, updateBonus, };

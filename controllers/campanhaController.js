@@ -1,4 +1,3 @@
-// controllers/campanhaController.js
 const CampanhaModel = require("../models/CampanhaModel");
 const SolicitacaoModel = require("../models/SolicitacaoModel");
 const db = require("../config/db");
@@ -147,7 +146,6 @@ async function recusarSolicitacao(req, res) {
 }
 
 async function buscarJogadores(req, res) {
-  // Apenas mestres podem buscar jogadores
   if (req.session.userRole !== 'mestre') {
     return res.status(403).json({ erro: "Acesso negado" });
   }
